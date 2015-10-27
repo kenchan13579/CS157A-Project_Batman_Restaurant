@@ -32,25 +32,3 @@ Functional Requirements
 * Rating and feedback of the restaurant 
 * Check food/beverage quantities
 * Check daily revenue
-
-
-unctionalities 
-* Order food & beverage
-* Print a full menu
-* Print a beverage menu
-* Get number of available tables
-* Reserve tables for a customer
-* Seat a party
-* Assign a server to a table
-* Get the total price of the meal
-* Ability to track previous dinings/order details
-* Combine and split bills
-* Print receipt
-* Transfer tables
-* Get number of working employees by type
-* Check if restaurant is full
-* Rating and feedback of the restaurant 
-* Check food/beverage quantities
-* Check daily revenue
-
-
