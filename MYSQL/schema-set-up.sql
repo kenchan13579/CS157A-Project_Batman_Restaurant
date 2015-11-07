@@ -69,3 +69,34 @@ date DATE NOT NULL,
 FOREIGN KEY (tID) REFERENCES aTABLE(tID), 
 FOREIGN KEY (cID) REFERENCES CUSTOMER(cID)
 );
+
+/*
+/* Give discount to customers who give 5 star ratings */
+CREATE TRIGGER highRater
+AFTER INSERT ON Rating
+FOR EACH ROW
+UPDATE Customer
+	SET discount=10
+	WHERE cID=new.cID
+
+/* Apply discount to receipt */
+CREATE TRIGGER discount
+BEFORE INSERT ON Receipt
+FOR EACH ROW
+WHEN new.cID IN (
+	SELECT cID
+	FROM Customer
+	WHERE discount>0)
+SET new.subtotal=new.subtotal*(100-(
+	SELECT discount
+	FROM Customer
+	WHERE cID=new.cID;))/100;
+
+/* Update customer lastVisit when reservation is made */
+CREATE TRIGGER visiting
+AFTER INSERT ON Reservation
+FOR EACH ROW
+UPDATE Customer
+	SET updatedAt=Date(now)
+	WHERE new.cID=cID;
+*/
