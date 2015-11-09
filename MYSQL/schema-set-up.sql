@@ -32,7 +32,7 @@ firstName VARCHAR(25) NOT NULL,
 lastName VARCHAR(25) NOT NULL,
 email VARCHAR(25) NOT NULL,
 lastVisited DATE NOT NULL,
-discount INT,
+discount INT NOT NULL DEFAULT 0,
 PRIMARY KEY (cid) );
 
 
