@@ -1,3 +1,4 @@
+
 DROP DATABASE IF EXISTS Restaurant;
 CREATE DATABASE Restaurant;
 USE Restaurant;
@@ -8,6 +9,7 @@ eid INT NOT NULL AUTO_INCREMENT,
 firstName VARCHAR(25) NOT NULL,
 lastName VARCHAR(25) NOT NULL,
 position VARCHAR(25) NOT NULL,
+email VARCHAR(25) NOT NULL,
 lastWorked DATE,
 PRIMARY KEY (eid));
 
@@ -18,6 +20,7 @@ eid INT NOT NULL,
 firstName VARCHAR(25) NOT NULL,
 lastName VARCHAR(25) NOT NULL,
 position VARCHAR(25) NOT NULL,
+email VARCHAR(25) NOT NULL,
 lastWorked DATE,
 PRIMARY KEY (eid));
 
@@ -27,6 +30,7 @@ CREATE TABLE CUSTOMER (
 cid INT NOT NULL AUTO_INCREMENT,
 firstName VARCHAR(25) NOT NULL,
 lastName VARCHAR(25) NOT NULL,
+email VARCHAR(25) NOT NULL,
 lastVisited DATE NOT NULL,
 PRIMARY KEY (cid) );
 
@@ -36,14 +40,15 @@ CREATE TABLE ARC_CUSTOMER (
 cid INT NOT NULL,
 firstName VARCHAR(25) NOT NULL,
 lastName VARCHAR(25) NOT NULL,
+email VARCHAR(25) NOT NULL,
 lastVisited DATE NOT NULL,
-PRIMARY KEY (cid) )
+PRIMARY KEY (cid) );
 
 
 DROP TABLE IF EXISTS aTABLE ;
 CREATE TABLE aTABLE (
 tID INT NOT NULL AUTO_INCREMENT,
-eID INT NOT NULL,
+eID INT,
 seats INT NOT NULL,
 available BOOLEAN NOT NULL,
 PRIMARY KEY (tID) );
@@ -113,70 +118,53 @@ FOREIGN KEY (tID) REFERENCES aTABLE(tID),
 FOREIGN KEY (cID) REFERENCES CUSTOMER(cID)
 );
 
-
-/* Triggers */
-
-/* Give discount to customers who give 5 star ratings */
+/* triggers */
+/*Give discounts to customers who give 5-stars ratings*/
 DROP TRIGGER IF EXISTS highRater;
 CREATE TRIGGER highRater
 AFTER INSERT ON Rating
 FOR EACH ROW
-UPDATE Customer
-	SET discount=10
-	WHERE cID=new.cID;
+UPDATE Customer Set discount=10 WHERE cID=new.cID;
 
-/* Apply discount to receipt */
-DROP TRIGGER IF EXISTS discount;
-CREATE TRIGGER discount
-BEFORE INSERT ON Receipt
-FOR EACH ROW
-WHEN new.cID IN (
-	SELECT cID
-	FROM Customer
-	WHERE discount>0;)
-SET new.subtotal=new.subtotal*(100-(
-	SELECT discount
-	FROM Customer
-	WHERE cID=new.cID;))/100;
 
-/* Update customer lastVisit when reservation is made */
+
+
+/*Update lastVisited when reservation is made*/
 DROP TRIGGER IF EXISTS visiting;
 CREATE TRIGGER visiting
 AFTER INSERT ON Reservation
-FOR EACH ROW
-UPDATE Customer
-	SET lastVisited=Date(now)
-	WHERE new.cID=cID;
+FOR EACH ROW 
+UPDATE Customer Set lastVisited = Date(now) WHERE cID=NEW.cID;
 
 
-/* Stored Procedures */
-
-/* Archive Employees */
-DROP PROCEDURE IF EXISTS archiveEmployees;
-DELIMITER //
-CREATE PROCEDURE archiveEmployees(IN oldDate DATE)
-BEGIN
-	INSERT INTO arc_Employee ( SELECT * FROM Employee WHERE lastWorked<oldDate);
-	DELETE FROM Employee WHERE lastWorked<oldDate;
-END //
-DELIMITER ;
-
-/* Archive Customers */
-DROP PROCEDURE IF EXISTS archiveCustomers;
-DELIMITER //
-CREATE PROCEDURE archiveCustomers (IN oldDate DATE)
-BEGIN
-	INSERT INTO arc_Customer ( SELECT * FROM Customer WHERE lastVisited<oldDate);
-	DELETE FROM Customer WHERE lastVisited<oldDate;
-END //
-DELIMITER ;
-
-/* Archive Receipts */
+/* Procdedure */
+/* Archive receipts */
 DROP PROCEDURE IF EXISTS archiveReceipts;
-DELIMITER //
+DELIMITER $$
 CREATE PROCEDURE archiveReceipts (IN oldDate DATE)
 BEGIN
-	INSERT INTO arc_Receipt ( SELECT * FROM Receipt WHERE date<oldDate);
+	INSERT INTO arc_Receipt VALUES ( SELECT * FROM Receipt WHERE date<oldDate);
 	DELETE FROM Receipt WHERE date<oldDate;
-END //
+END;
 DELIMITER ;
+
+/* archive customers */
+DROP PROCEDURE IF EXISTS archiveCustomers;
+DELIMITER $$
+CREATE PROCEDURE archiveCustomers (IN oldDate DATE)
+BEGIN
+	INSERT INTO arc_Customer VALUES ( SELECT * FROM Customer WHERE lastVisited<oldDate);
+	DELETE FROM Customer WHERE lastVisited<oldDate;
+END;
+DELIMITER ;
+
+/* archive employees */
+DROP PROCEDURE IF EXISTS archiveEmployees;
+DELIMITER $$
+CREATE PROCEDURE archiveEmployees(IN oldDate DATE)
+BEGIN
+	INSERT INTO arc_Employee VALUES ( SELECT * FROM Employee WHERE lastWorked<oldDate);
+	DELETE FROM Employee WHERE lastWorked<oldDate;
+END;
+DELIMITER ;
+
