@@ -128,8 +128,6 @@ FOR EACH ROW
 UPDATE Customer Set discount=10 WHERE cID=new.cID;
 
 
-
-
 /*Update lastVisited when reservation is made*/
 DROP TRIGGER IF EXISTS visiting;
 CREATE TRIGGER visiting

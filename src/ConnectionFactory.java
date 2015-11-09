@@ -14,9 +14,9 @@ public class ConnectionFactory {
 		Connection connection = null;
 
 		try {
-			connection = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/restaurant", "root", "");
+			connection = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/restaurant?zeroDateTimeBehavior=convertToNull", "root", "");
 			if (connection != null) {
-				System.out.println("You made it, take control your database now!");
+				System.out.println("Database Connected!");
 			} else {
 				System.out.println("Failed to make connection!");
 			}
