@@ -1,9 +1,9 @@
 
 public class Customer extends Person{
-
-	public Customer(String fn, String ln) {
-		super(fn, ln);
-		// TODO Auto-generated constructor stub
+	
+	public Customer(String fn, String ln, String email) {
+		super(fn, ln , email);
+		
 	}
 
 }

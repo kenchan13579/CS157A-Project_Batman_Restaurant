@@ -53,7 +53,7 @@ public class Operation {
 	 * @return number of available tables
 	 */
 	public int numOfAvailableTable() {
-		String sql ="SELECT count(*) FROM aTable WHERE availability = TRUE";
+		String sql ="SELECT count(*) FROM aTable WHERE available = TRUE";
 		int res = 0;
 		try {
 			PreparedStatement statement = (PreparedStatement) conn.prepareStatement(sql);
@@ -71,36 +71,97 @@ public class Operation {
 			return -1;
 		}
 	}
-	// need to check if customer in the database already, if not , add to database ( another method)
-	// need another method to get id of available table with given number of seats
-	public boolean reserveTable(int partySize ) {
-		String sql ="INSERT INTO Reservation values(?, ?, ?, ?)";
+	public boolean addCustomer(String ln, String fn, String email) {
+		String sql_addcustomer = "INSERT INTO CUSTOMER (email,lastname,firstname) VALUES (?,?,?,?)";
+		try {
+			PreparedStatement addCustomer = (PreparedStatement) conn.prepareStatement(sql_addcustomer);
+			addCustomer.setString(0, email);
+			addCustomer.setString(1, ln);
+			addCustomer.setString(2, fn);
+			addCustomer.execute();
+			addCustomer.close();
+			return true;
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			return false;
+		}
+	}
+	public int getCID ( Customer c) {
+		String sql = "Select cID FROM Customer WHERE firstname=? AND lastname=? AND EMAIL=?";
 		try {
 			
 			PreparedStatement statement = (PreparedStatement) conn.prepareStatement(sql);
-			statement.setDate(0, new Date(Calendar.getInstance().getTimeInMillis()));
-			statement.setInt(1, partySize);
-			// need more code
+			statement.setString(0, c.getFirstName());
+			statement.setString(1, c.getLastName());
+			statement.setString(2, c.getEmail());
 			ResultSet rs = statement.executeQuery();
-			
+			if ( rs.next()) {
+				return rs.getInt(0); //cid
+			} else {
+				return -1; // not exist
+			}
+		
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Failed: "+e.getMessage());
+			return -1;
+		}
+	}
+	// need to check if customer in the database already, if not , add to database ( another method)
+	// need another method to get id of available table with given number of seats
+	public boolean reserveTable(int partySize,Date d,int tID , Customer c) {
+		String sql_reversel ="INSERT INTO Reservation (date,partySize,cID,tID) values(?, ?, ("
+				+ "Select cID FROM Customer WHERE firstname=? AND lastname=? AND EMAIL=?"
+				+ "), ?)";
+		try {
+					
+			PreparedStatement statement = (PreparedStatement) conn.prepareStatement(sql_reversel);
+			statement.setDate(0, d);
+			statement.setInt(1, partySize);
+			statement.setString(2,c.getFirstName());
+			statement.setString(3, c.getLastName());
+			statement.setString(4, c.getEmail());
+			statement.setInt(5, tID);
+			ResultSet rs = statement.executeQuery();
 			statement.close();
 			rs.close();
 			return true;
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Failed: "+e.getMessage());
 			return false;
 		}
 	}
 	/**
-	 * DELETE FROM Reservation WHERE cID=? AND date=?
+	 * 
 	 * @param cID
 	 * @param d
 	 * @return
 	 */
-	public boolean cancelReservation(int cID, Date d) {
-		return true;
+	public boolean cancelReservation(Customer c, Date d) {
+		int cId = getCID(c);
+		if (cId == -1) {
+			System.out.println("No such customer");
+			return false;
+		}
+		String sql ="DELETE FROM Reservation WHERE cID=? AND date=?";
+		try {
+					
+			PreparedStatement statement = (PreparedStatement) conn.prepareStatement(sql);
+			statement.setInt(0, cId);
+			statement.setDate(1, d);
+			ResultSet rs = statement.executeQuery();
+			statement.close();
+			rs.close();
+			return true;
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Failed: "+e.getMessage());
+			return false;
+		}
+		
 	}
 	/**
 	 * UPDATE Reservation SET partySize=? WHERE cID=? AND date=?;

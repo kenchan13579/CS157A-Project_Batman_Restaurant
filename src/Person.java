@@ -2,9 +2,29 @@
 public class Person {
 	private String firstName;
 	private String lastName;
-	public Person(String fn , String ln) {
+	private String email;
+	public Person(String fn , String ln , String email) {
 		this.firstName = fn;
 		this.lastName = ln;
+		this.email = email;
+	}
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	
 }
