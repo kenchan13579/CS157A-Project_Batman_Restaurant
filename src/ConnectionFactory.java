@@ -1,12 +1,7 @@
-import java.io.*;
+import com.mysql.jdbc.Connection;
+
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
-
-import javax.sql.DataSource;
-
-import com.mysql.jdbc.Connection;
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 public class ConnectionFactory {
 	public static Connection getMYSQLConnection()  {

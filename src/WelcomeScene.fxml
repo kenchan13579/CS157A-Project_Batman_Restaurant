@@ -61,9 +61,9 @@
          </children></Pane>
       <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #30333A;" GridPane.columnIndex="1">
          <children>
-            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="4.0" layoutY="37.0" prefHeight="59.0" prefWidth="539.0" text="Hotel Reservation System" textAlignment="CENTER" textFill="#e33247e1">
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="4.0" layoutY="37.0" prefHeight="59.0" prefWidth="539.0" text="Restaurant Reservation System" textAlignment="CENTER" textFill="#e33247e1">
                <font>
-                  <Font name="System Bold" size="40.0" />
+                  <Font name="System Bold" size="32.0" />
                </font>
             </Label>
          </children></Pane>

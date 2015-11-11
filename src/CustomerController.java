@@ -1,10 +1,11 @@
+import Model.Customer;
+import com.mysql.jdbc.Connection;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.LightBase;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -18,7 +19,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -27,8 +28,8 @@ import java.sql.Statement;
  */
 public class CustomerController {
 
-    Connection connection = ConnectionFactory.getMYSQLConnection();
-
+    private Connection connection = ConnectionFactory.getMYSQLConnection();
+    private Operation operation = new Operation(connection);
     @FXML
     private Label titleLabel;
     @FXML
@@ -222,19 +223,25 @@ public class CustomerController {
         HBox hbox3 = new HBox();
         HBox hbox4 = new HBox();
         HBox hbox5 = new HBox();
+        HBox hbox6 = new HBox();
+        HBox hbox7 = new HBox();
+
 
         //4 labels for table, date, party size
         Label tableLabel = new Label("Table:");
         Label dateLabel = new Label("Date:");
         Label partySizeLabel =  new Label("Party Size: ");
-        Label customerLabel = new Label("Customer ID: ");
+        Label firstNameLabel = new Label("First Name: ");
+        Label lastNameLabel = new Label("Last Name: ");
+        Label emailLabel = new Label("Email: ");
 
         //set font for 3 labels
         tableLabel.setFont(new Font("System", 24));
         dateLabel.setFont(new Font("System", 24));
         partySizeLabel.setFont(new Font("System", 24));
-        customerLabel.setFont(new Font("System", 24));
-
+        firstNameLabel.setFont(new Font("System", 24));
+        lastNameLabel.setFont(new Font("System", 24));
+        emailLabel.setFont(new Font("System", 24));
 
 
         //4 textfields for data
@@ -244,26 +251,38 @@ public class CustomerController {
         dateTextField.setPromptText("YYYY-MM-DD");
         TextField partySizeTextField = new TextField();
         partySizeTextField.setPromptText("0-10");
-        TextField customerTextField = new TextField();
-        customerTextField.setPromptText("Customer ID");
-
+        TextField firstnameTextField = new TextField();
+        firstnameTextField.setPromptText("First Name");
+        TextField lastnameTextField = new TextField();
+        lastnameTextField.setPromptText("Last Name");
+        TextField emailTextField = new TextField();
+        emailTextField.setPromptText("Email");
 
 
         hbox1.getChildren().addAll(tableLabel, tableTextField);
         hbox1.setAlignment(Pos.CENTER);
-        hbox1.setSpacing(75);
+        hbox1.setSpacing(105);
 
         hbox2.getChildren().addAll(dateLabel, dateTextField);
         hbox2.setAlignment(Pos.CENTER);
-        hbox2.setSpacing(85);
+        hbox2.setSpacing(115);
 
         hbox3.getChildren().addAll(partySizeLabel, partySizeTextField);
         hbox3.setAlignment(Pos.CENTER);
-        hbox3.setSpacing(20);
+        hbox3.setSpacing(50);
 
-        hbox4.getChildren().addAll(customerLabel, customerTextField);
+        hbox4.getChildren().addAll(firstNameLabel, firstnameTextField);
         hbox4.setAlignment(Pos.CENTER);
-        hbox4.setSpacing(20);
+        hbox4.setSpacing(40);
+
+        hbox5.getChildren().addAll(lastNameLabel, lastnameTextField);
+        hbox5.setAlignment(Pos.CENTER);
+        hbox5.setSpacing(40);
+
+        hbox6.getChildren().addAll(emailLabel, emailTextField);
+        hbox6.setAlignment(Pos.CENTER);
+        hbox6.setSpacing(100);
+
 
 
         //Confirm button
@@ -274,52 +293,41 @@ public class CustomerController {
         confirmButton.setPrefSize(130, 40);
         confirmButton.setOnAction(e-> {
             if (tableTextField.getText() != null && dateTextField.getText() != null
-                    && partySizeTextField.getText() != null && customerTextField.getText() != null) {
-                int tableID = Integer.parseInt(tableTextField.getText().trim());
-                int customerID = Integer.parseInt(customerLabel.getText().trim());
-                int partySize = Integer.parseInt(partySizeTextField.getText().trim());
-                String date = dateTextField.getText().trim();
+                    && partySizeTextField.getText() != null && firstnameTextField.getText() != null && lastnameTextField.getText() != null
+                    && emailTextField.getText() != null) {
 
-                try {
-                    makeReservations(this.connection, tableID, customerID, partySize, date);
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
+                //Get all the data from text fields
+                int tableID = Integer.parseInt(tableTextField.getText().trim());
+                int partySize = Integer.parseInt(partySizeTextField.getText().trim());
+                String firstname = firstnameTextField.getText().trim();
+                String lastname = lastnameTextField.getText().trim();
+                String email = emailTextField.getText().trim();
+                Date date = Date.valueOf(dateTextField.getText().trim());
+
+
+                Customer customer = new Customer(firstname, lastname, email);
+
+                operation.reserveTable(partySize, date, tableID, customer);
                 contentPane.getChildren().clear();
                 titleLabel.setText("Your table has been reserved!");
-            } else {
-                titleLabel.setText("Reservation fails. Do it again!");
             }
 
         });
 
-        hbox5.getChildren().add(confirmButton);
-        hbox5.setAlignment(Pos.CENTER);
-        hbox5.setPadding(new Insets(50, 0, 0, 0));
-        hbox5.setSpacing(15);
+        hbox7.getChildren().add(confirmButton);
+        hbox7.setAlignment(Pos.CENTER);
+        hbox7.setPadding(new Insets(50, 0, 0, 0));
+        hbox7.setSpacing(15);
 
         VBox box = new VBox();
         box.setSpacing(20);
         box.setPadding(new Insets(30, 0, 0, 0));
         box.setAlignment(Pos.TOP_CENTER);
-        box.getChildren().addAll(hbox1, hbox2, hbox3, hbox4, hbox5);
+        box.getChildren().addAll(hbox1, hbox2, hbox3, hbox4, hbox5, hbox6, hbox7);
 
         //add all to contentpane
         contentPane.getChildren().add(box);
     }
-
-    public static void makeReservations(Connection connection, int tableID, int customerID, int partySize, String date) throws SQLException {
-//		String query = "INSERT INTO RESERVATION (tID, cID, partySize, reservationDate) VALUES (" +
-//				tableID + "," + customerID + "," + partySize +", " + date ")\"";
-//		try (Statement statement = connection.createStatement()) {
-//			System.out.println("Making reservation....");
-//			statement.executeUpdate(query);
-//			System.out.println("Reservation has been placed.");
-//		} catch (SQLException e) {
-//			System.out.println("Making reservation fails!");
-//			e.printStackTrace();
-//		}
-	}
 
     @FXML
     private void foodMenuButtonClicked(ActionEvent event) {
@@ -488,6 +496,8 @@ public class CustomerController {
         // set up
         titleLabel.setText("Rating and Feedback");
 
+
+
         // rating box
         HBox ratingBox = new HBox();
         ratingBox.setAlignment(Pos.CENTER);
@@ -520,8 +530,9 @@ public class CustomerController {
                 if (star1.isSelected()) {
                     star1.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(yellowStarURL))));
 
-                } else
+                } else {
                     star1.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(blankStarURL))));
+                }
 
             }
         });
@@ -595,8 +606,26 @@ public class CustomerController {
                 "-fx-text-fill: white");
         confirmButton.setPrefSize(130, 40);
         confirmButton.setOnAction(e-> {
+            int count = 0;
+            String feedback = null;
+            int cID = 1;
+            if (textArea.getText() != null) {
+                //get the stars
+                count += (star1.isSelected()) ? 1 : 0;
+                count += (star2.isSelected()) ? 1 : 0;
+                count += (star3.isSelected()) ? 1 : 0;
+                count += (star4.isSelected()) ? 1 : 0;
+                count += (star5.isSelected()) ? 1 : 0;
+
+                feedback = textArea.getText().trim();
+
+
+                contentPane.getChildren().clear();
+                titleLabel.setText("Feedback Received!");
+                return;
+            }
             contentPane.getChildren().clear();
-            titleLabel.setText("Feedback Received!");
+            titleLabel.setText("Feedback Fails!");
         });
 
         //Add children nodes to appropriate boxes

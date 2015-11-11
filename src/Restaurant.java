@@ -105,7 +105,7 @@
 //
 //	public static void makeReservations(Connection connection, int tableID, int customerID, int partySize, String date) throws SQLException {
 //		String query = "INSERT INTO RESERVATION (tID, cID, partySize, reservationDate) VALUES (" +
-//				tableID + "," + customerID + "," + partySize +", " + date ")"";
+//				tableID + "," + customerID + "," + partySize + ", " + date + ")";
 //		try (Statement statement = connection.createStatement()) {
 //			System.out.println("Making reservation....");
 //			statement.executeUpdate(query);

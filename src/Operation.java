@@ -1,10 +1,11 @@
-package Model;
-
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import Model.Customer;
+import Model.Item;
+import Model.Receipt;
 import com.mysql.jdbc.*;
 
 public class Operation {
@@ -111,21 +112,20 @@ public class Operation {
 	// need to check if customer in the database already, if not , add to database ( another method)
 	// need another method to get id of available table with given number of seats
 	public boolean reserveTable(int partySize,Date d,int tID , Customer c) {
-		String sql_reversel ="INSERT INTO Reservation (date,partySize,cID,tID) values(?, ?, ("
+		String sql_reversel ="INSERT INTO Reservation (reservationDate,partySize,cID,tID) values(?, ?, ("
 				+ "Select cID FROM Customer WHERE firstname=? AND lastname=? AND EMAIL=?"
 				+ "), ?)";
 		try {
 					
 			PreparedStatement statement = (PreparedStatement) conn.prepareStatement(sql_reversel);
-			statement.setDate(0, d);
-			statement.setInt(1, partySize);
-			statement.setString(2,c.getFirstName());
-			statement.setString(3, c.getLastName());
-			statement.setString(4, c.getEmail());
-			statement.setInt(5, tID);
-			ResultSet rs = statement.executeQuery();
+			statement.setDate(1, d);
+			statement.setInt(2, partySize);
+			statement.setString(3,c.getFirstName());
+			statement.setString(4, c.getLastName());
+			statement.setString(5, c.getEmail());
+			statement.setInt(6, tID);
+			statement.execute();
 			statement.close();
-			rs.close();
 			return true;
 			
 		} catch (SQLException e) {
@@ -174,11 +174,19 @@ public class Operation {
 	public boolean changeReservation(int cID , Date d, int size) {
 		return true;
 	}
-	
-	/**SELECT *
-		FROM Model.Receipt WHERE cID=? AND date=?
+
+	/**
+	 * SELECT *
+	 * FROM Model.Receipt WHERE cID=? AND date=?
+	 *
 	 * @return
 	 */
+
+	public boolean insertRating(int stars, String feedback, Customer customer) {
+		return true;
+	}
+
+
 	public Receipt printReceipt() {
 		return null;
 	}
