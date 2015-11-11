@@ -1,8 +1,9 @@
+package Model;
+
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import com.mysql.jdbc.*;
 
@@ -175,13 +176,13 @@ public class Operation {
 	}
 	
 	/**SELECT *
-		FROM Receipt WHERE cID=? AND date=?
+		FROM Model.Receipt WHERE cID=? AND date=?
 	 * @return
 	 */
 	public Receipt printReceipt() {
 		return null;
 	}
-	//SELECT *	FROM Receipt 	WHERE cID=? AND date=?
+	//SELECT *	FROM Model.Receipt 	WHERE cID=? AND date=?
 	public int numOfEmployees() {
 		return 0;
 	}
@@ -197,23 +198,23 @@ public class Operation {
 		return null;
 	}
 	//SELECT sum(subtotal)
-	//FROM Receipt
+	//FROM Model.Receipt
 	//WHERE date=?
 	public double revenue() {
 		return 0.0;
 	}
 	/* Track previous items ordered for a customer */
 	/*SELECT itemName, sum(quantity)
-	FROM Receipt JOIN Receipt_Item JOIN Menu
+	FROM Model.Receipt JOIN Receipt_Item JOIN Model.Menu
 	WHERE cID=?
 	GROUP BY itemName
 
 	/* Get total price of a meal */
 	/*SELECT subtotal
-	FROM Receipt
+	FROM Model.Receipt
 	WHERE receiptID=?*/
 
-	/* Customer give feedback and rating */
+	/* Model.Customer give feedback and rating */
 	/*INSERT INTO Rating values(null, cID, rating, feedback)*/
 
 
@@ -233,18 +234,18 @@ public class Operation {
 */
 	/* List employees who are also customers */
 	/*SELECT first, last
-	FROM Employee
+	FROM Model.Employee
 	WHERE EXISTS (
 		SELECT *
-		FROM Customer
-		WHERE Employee.first=Customer.first AND Employee.last=Customer.last)
+		FROM Model.Customer
+		WHERE Model.Employee.first=Model.Customer.first AND Model.Employee.last=Model.Customer.last)
 
 	/* List of customers who do not tip */
 	/*SELECT *
-	FROM Customer
+	FROM Model.Customer
 	WHERE EXISTS (
 		SELECT *
-		FROM Receipt
-		WHERE Customer.cID=Receipt.cID AND gratuity=0)
+		FROM Model.Receipt
+		WHERE Model.Customer.cID=Model.Receipt.cID AND gratuity=0)
 */
 }

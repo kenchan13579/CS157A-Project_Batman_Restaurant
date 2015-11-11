@@ -142,7 +142,7 @@ DROP PROCEDURE IF EXISTS archiveReceipts;
 DELIMITER $$
 CREATE PROCEDURE archiveReceipts (IN oldDate DATE)
 BEGIN
-	INSERT INTO arc_Receipt VALUES ( SELECT * FROM Receipt WHERE date<oldDate);
+	INSERT INTO arc_Receipt VALUES ( SELECT * FROM Model.Receipt WHERE date<oldDate);
 	DELETE FROM Receipt WHERE date<oldDate;
 END;
 DELIMITER ;
@@ -152,7 +152,7 @@ DROP PROCEDURE IF EXISTS archiveCustomers;
 DELIMITER $$
 CREATE PROCEDURE archiveCustomers (IN oldDate DATE)
 BEGIN
-	INSERT INTO arc_Customer VALUES ( SELECT * FROM Customer WHERE lastVisited<oldDate);
+	INSERT INTO arc_Customer VALUES ( SELECT * FROM Model.Customer WHERE lastVisited<oldDate);
 	DELETE FROM Customer WHERE lastVisited<oldDate;
 END;
 DELIMITER ;
@@ -162,7 +162,7 @@ DROP PROCEDURE IF EXISTS archiveEmployees;
 DELIMITER $$
 CREATE PROCEDURE archiveEmployees(IN oldDate DATE)
 BEGIN
-	INSERT INTO arc_Employee VALUES ( SELECT * FROM Employee WHERE lastWorked<oldDate);
+	INSERT INTO arc_Employee VALUES ( SELECT * FROM Model.Employee WHERE lastWorked<oldDate);
 	DELETE FROM Employee WHERE lastWorked<oldDate;
 END;
 DELIMITER ;
