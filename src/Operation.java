@@ -1,12 +1,13 @@
+import Model.Customer;
+import Model.Item;
+import Model.Receipt;
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.PreparedStatement;
+
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import Model.Customer;
-import Model.Item;
-import Model.Receipt;
-import com.mysql.jdbc.*;
 
 public class Operation {
 	private Connection conn;
@@ -88,17 +89,15 @@ public class Operation {
 			return false;
 		}
 	}
-	public int getCID ( Customer c) {
-		String sql = "Select cID FROM Customer WHERE firstname=? AND lastname=? AND EMAIL=?";
+	public int getCID ( String email) {
+		String sql = "Select cID FROM Customer WHERE EMAIL=?";
 		try {
 			
 			PreparedStatement statement = (PreparedStatement) conn.prepareStatement(sql);
-			statement.setString(0, c.getFirstName());
-			statement.setString(1, c.getLastName());
-			statement.setString(2, c.getEmail());
+			statement.setString(1, email);
 			ResultSet rs = statement.executeQuery();
 			if ( rs.next()) {
-				return rs.getInt(0); //cid
+				return rs.getInt("cid"); //cid
 			} else {
 				return -1; // not exist
 			}
@@ -112,20 +111,25 @@ public class Operation {
 	// need to check if customer in the database already, if not , add to database ( another method)
 	// need another method to get id of available table with given number of seats
 	public boolean reserveTable(int partySize,Date d,int tID , Customer c) {
-		String sql_reversel ="INSERT INTO Reservation (reservationDate,partySize,cID,tID) values(?, ?, ("
-				+ "Select cID FROM Customer WHERE firstname=? AND lastname=? AND EMAIL=?"
-				+ "), ?)";
+		PreparedStatement statement = null;
+		int customerid = getCID(c.getEmail());
+		String sql_reserve ="INSERT INTO Restaurant.Reservation (reservationDate,partySize,cID,tID) values(?, ?, ?,?)";
 		try {
-					
-			PreparedStatement statement = (PreparedStatement) conn.prepareStatement(sql_reversel);
+			conn.setAutoCommit(false);
+			statement = (PreparedStatement) conn.prepareStatement(sql_reserve);
 			statement.setDate(1, d);
 			statement.setInt(2, partySize);
-			statement.setString(3,c.getFirstName());
-			statement.setString(4, c.getLastName());
-			statement.setString(5, c.getEmail());
-			statement.setInt(6, tID);
-			statement.execute();
-			statement.close();
+			statement.setInt(3, customerid);
+			statement.setInt(4, tID);
+			statement.executeUpdate();
+			conn.commit();
+
+			if (statement != null) {
+				statement.close();
+			}
+
+			conn.setAutoCommit(true);
+
 			return true;
 			
 		} catch (SQLException e) {
@@ -140,39 +144,52 @@ public class Operation {
 	 * @param d
 	 * @return
 	 */
-	public boolean cancelReservation(Customer c, Date d) {
-		int cId = getCID(c);
-		if (cId == -1) {
-			System.out.println("No such customer");
-			return false;
+	public void cancelReservation(String email, Date d) {
+		int cid = getCID(email);
+
+		if (cid != -1) {
+			String queryCancelReservation ="DELETE FROM Reservation WHERE cID=? AND reservationDate=?";
+			try {
+				PreparedStatement statement = (PreparedStatement) conn.prepareStatement(queryCancelReservation);
+				statement.setInt(1, cid);
+				statement.setDate(2, d);
+				statement.execute();
+				statement.close();
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.println("Failed: "+e.getMessage());
+			}
 		}
-		String sql ="DELETE FROM Reservation WHERE cID=? AND date=?";
-		try {
-					
-			PreparedStatement statement = (PreparedStatement) conn.prepareStatement(sql);
-			statement.setInt(0, cId);
-			statement.setDate(1, d);
-			ResultSet rs = statement.executeQuery();
-			statement.close();
-			rs.close();
-			return true;
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			System.out.println("Failed: "+e.getMessage());
-			return false;
-		}
+
+
 		
 	}
-	/**
-	 * UPDATE Reservation SET partySize=? WHERE cID=? AND date=?;
-	 * @param cID
-	 * @param d
-	 * @param size
-	 * @return
-	 */
-	public boolean changeReservation(int cID , Date d, int size) {
-		return true;
+
+	public void changeReservation(String email , Date date, int partySize) throws SQLException {
+		PreparedStatement updateReservation = null;
+		int customerID = getCID(email);
+		String query = "update reservation set reservationDate = ?, partysize = ? where cid = ?";
+
+		try {
+			conn.setAutoCommit(false);
+			updateReservation = (PreparedStatement) conn.prepareStatement(query);
+			updateReservation.setDate(1, date);
+			updateReservation.setInt(2, partySize);
+			updateReservation.setInt(3, customerID);
+			updateReservation.execute();
+
+			conn.commit();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (updateReservation != null) {
+				updateReservation.close();
+			}
+
+			conn.setAutoCommit(true);
+		}
 	}
 
 	/**
@@ -182,8 +199,30 @@ public class Operation {
 	 * @return
 	 */
 
-	public boolean insertRating(int stars, String feedback, Customer customer) {
-		return true;
+	public void rate(int stars, String feedback, Customer customer) throws SQLException {
+		PreparedStatement insertStatement = null;
+		int customerID = getCID(customer.getEmail());
+		String query = "INSERT INTO Rating (cid, stars, feedback) VALUES (?,?,?)";
+
+		try {
+			conn.setAutoCommit(false);
+			insertStatement = (PreparedStatement) conn.prepareStatement(query);
+			insertStatement.setInt(1, customerID);
+			insertStatement.setInt(2, stars);
+			insertStatement.setString(3, feedback);
+			insertStatement.execute();
+
+			conn.commit();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (insertStatement != null) {
+				insertStatement.close();
+			}
+
+			conn.setAutoCommit(true);
+		}
 	}
 
 

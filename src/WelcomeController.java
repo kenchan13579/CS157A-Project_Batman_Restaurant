@@ -8,11 +8,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import com.mysql.jdbc.Connection;
 
-import javax.swing.*;
 import java.io.IOException;
 
 public class WelcomeController {
+    Connection connection = ConnectionFactory.getMYSQLConnection();
+    Operation operation = new Operation(connection);
     @FXML
     private Button adminButton;
     @FXML
@@ -114,7 +116,6 @@ public class WelcomeController {
                 }
             }
         }
-
 
     }
 

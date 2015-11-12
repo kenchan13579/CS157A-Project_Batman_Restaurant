@@ -15,13 +15,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 /**
  * Created by phucnguyen on 11/10/15.
@@ -407,17 +405,20 @@ public class CustomerController {
         HBox hbox2 = new HBox();
         HBox hbox3 = new HBox();
         HBox hbox4 = new HBox();
+        HBox hbox5 = new HBox();
 
         //3 labels for table, date, party size
         Label tableLabel = new Label("Table:");
         Label dateLabel = new Label("Date:");
         Label partySizeLabel =  new Label("Party Size: ");
+        Label emailLabel = new Label("Email:");
 
         //set font for 3 labels
-        tableLabel.setFont(new Font("System", 24));
-        dateLabel.setFont(new Font("System", 24));
-        partySizeLabel.setFont(new Font("System", 24));
-
+        Font newFont = new Font("System", 24);
+        tableLabel.setFont(newFont);
+        dateLabel.setFont(newFont);
+        partySizeLabel.setFont(newFont);
+        emailLabel.setFont(newFont);
 
 
 
@@ -428,7 +429,8 @@ public class CustomerController {
         dateTextField.setPromptText("YYYY-MM-DD");
         TextField partySizeTextField = new TextField();
         partySizeTextField.setPromptText("0-10");
-
+        TextField emailTextField = new TextField();
+        emailTextField.setPromptText("Email");
 
 
         hbox1.getChildren().addAll(tableLabel, tableTextField);
@@ -443,15 +445,38 @@ public class CustomerController {
         hbox3.setAlignment(Pos.CENTER);
         hbox3.setSpacing(20);
 
+        hbox4.getChildren().addAll(emailLabel, emailTextField);
+        hbox4.setAlignment(Pos.CENTER);
+        hbox4.setSpacing(80);
+
         // update button
-        Button confirmButton = new Button("Update");
-        confirmButton.setStyle("-fx-background-color: #e63347;" +
+        Button updateButton = new Button("Update");
+        updateButton.setStyle("-fx-background-color: #e63347;" +
                 "-fx-background-radius: 7;" +
                 "-fx-text-fill: white");
-        confirmButton.setPrefSize(130, 40);
-        confirmButton.setOnAction(e-> {
-            contentPane.getChildren().clear();
-            titleLabel.setText("Your reservation has been updated!");
+        updateButton.setPrefSize(130, 40);
+        updateButton.setOnAction(e-> {
+            if (tableTextField.getText() != null && emailTextField.getText() != null
+                    && partySizeTextField.getText() != null && dateTextField.getText() != null) {
+                String tableid = tableTextField.getText().trim();
+                String email = emailTextField.getText().trim();
+                int partySize = Integer.parseInt(partySizeTextField.getText().trim());
+                Date date = Date.valueOf(dateTextField.getText().trim());
+
+                try {
+                    operation.changeReservation(email, date, partySize);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    titleLabel.setText("Something wrong!");
+                }
+
+                //Success? do this
+                contentPane.getChildren().clear();
+                titleLabel.setText("Your reservation has been updated!");
+            } else {
+                titleLabel.setText("Information missing. Do it again!");
+            }
+
         });
 
         //Cancel button
@@ -461,21 +486,36 @@ public class CustomerController {
                 "-fx-text-fill: white");
         cancelButton.setPrefSize(130, 40);
         cancelButton.setOnAction(e-> {
-            contentPane.getChildren().clear();
-            titleLabel.setText("Your reservation has been canceled!");
+
+            if (tableTextField.getText() != null && emailTextField.getText() != null
+                    && partySizeTextField.getText() != null && dateTextField.getText() != null) {
+                String tableid = tableTextField.getText().trim();
+                String email = emailTextField.getText().trim();
+                int tableSize = Integer.parseInt(partySizeTextField.getText().trim());
+                Date date = Date.valueOf(dateTextField.getText().trim());
+
+                operation.cancelReservation(email, date);
+
+                //Success? do this
+                contentPane.getChildren().clear();
+                titleLabel.setText("Your reservation has been canceled!");
+            } else {
+                titleLabel.setText("Something wrong!");
+            }
+
         });
 
 
-        hbox4.getChildren().addAll(cancelButton, confirmButton);
-        hbox4.setAlignment(Pos.CENTER);
-        hbox4.setPadding(new Insets(50, 0, 0, 0));
-        hbox4.setSpacing(15);
+        hbox5.getChildren().addAll(cancelButton, updateButton);
+        hbox5.setAlignment(Pos.CENTER);
+        hbox5.setPadding(new Insets(50, 0, 0, 0));
+        hbox5.setSpacing(15);
 
         VBox box = new VBox();
         box.setSpacing(20);
         box.setPadding(new Insets(30, 0, 0, 0));
         box.setAlignment(Pos.TOP_CENTER);
-        box.getChildren().addAll(hbox1, hbox2, hbox3, hbox4);
+        box.getChildren().addAll(hbox1, hbox2, hbox3, hbox4, hbox5);
 
         //add all to contentpane
         contentPane.getChildren().add(box);
@@ -606,18 +646,27 @@ public class CustomerController {
                 "-fx-text-fill: white");
         confirmButton.setPrefSize(130, 40);
         confirmButton.setOnAction(e-> {
-            int count = 0;
+            int stars = 0;
             String feedback = null;
             int cID = 1;
             if (textArea.getText() != null) {
                 //get the stars
-                count += (star1.isSelected()) ? 1 : 0;
-                count += (star2.isSelected()) ? 1 : 0;
-                count += (star3.isSelected()) ? 1 : 0;
-                count += (star4.isSelected()) ? 1 : 0;
-                count += (star5.isSelected()) ? 1 : 0;
+                stars += (star1.isSelected()) ? 1 : 0;
+                stars += (star2.isSelected()) ? 1 : 0;
+                stars += (star3.isSelected()) ? 1 : 0;
+                stars += (star4.isSelected()) ? 1 : 0;
+                stars += (star5.isSelected()) ? 1 : 0;
 
                 feedback = textArea.getText().trim();
+
+                Customer customer = new Customer("Jon", "Nguyen", "jon@abc.com");
+                try {
+                    operation.rate(stars, feedback, customer);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    contentPane.getChildren().clear();
+                    titleLabel.setText("Rating fails.");
+                }
 
 
                 contentPane.getChildren().clear();
