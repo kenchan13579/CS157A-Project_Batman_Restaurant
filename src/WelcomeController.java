@@ -132,7 +132,7 @@ public class WelcomeController {
         }
 
         Scene scene = new Scene(root, 1024, 720);
-        stage.setTitle("Model.Customer Dashboard");
+        stage.setTitle("Customer Dashboard");
         stage.setScene(scene);
         stage.show();
     }
