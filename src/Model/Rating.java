@@ -8,6 +8,9 @@ public class Rating {
     private int stars;
     private String feedback;
 
+    public Rating() {
+    }
+
     public Rating(int cID, int stars, String feedback) {
         this.cID = cID;
         this.stars = stars;

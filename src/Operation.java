@@ -1,18 +1,24 @@
 import Model.Customer;
 import Model.Item;
+import Model.Rating;
 import Model.Receipt;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
+import com.mysql.jdbc.Statement;
 
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+
+/**
+ * Operation performs SQL Functions to manipulate data of the database
+ */
 public class Operation {
-	private Connection conn;
+	private Connection connection;
 	public Operation(Connection c) {
-		this.conn = c;
+		this.connection = c;
 	}
 	
 	
@@ -27,7 +33,7 @@ public class Operation {
 			sql += " WHERE type=?";
 		}
 		try {
-			PreparedStatement statement = (PreparedStatement) conn.prepareStatement(sql);
+			PreparedStatement statement = (PreparedStatement) connection.prepareStatement(sql);
 			if ( type != null) {
 				statement.setString(0, type);
 			}
@@ -39,7 +45,6 @@ public class Operation {
 				String desc = rs.getString("description");
 				Item i = new Item(itemName, price, desc);
 				menu.add(i);
-				System.out.println(i);
 			}
 			rs.close();
 			statement.close();
@@ -51,6 +56,8 @@ public class Operation {
 			return null;
 		}
 	}
+
+
 	/**
 	 * get number of available tables
 	 * @return number of available tables
@@ -59,7 +66,7 @@ public class Operation {
 		String sql ="SELECT count(*) FROM aTable WHERE available = TRUE";
 		int res = 0;
 		try {
-			PreparedStatement statement = (PreparedStatement) conn.prepareStatement(sql);
+			PreparedStatement statement = (PreparedStatement) connection.prepareStatement(sql);
 			ResultSet rs = statement.executeQuery();
 			if ( rs.next()) {
 				res = rs.getInt(0);
@@ -74,10 +81,19 @@ public class Operation {
 			return -1;
 		}
 	}
+
+
+	/**
+	 * Add a customer
+	 * @param ln last name
+	 * @param fn fist name
+	 * @param email email
+     * @return true if succeed, false otherwise
+     */
 	public boolean addCustomer(String ln, String fn, String email) {
 		String sql_addcustomer = "INSERT INTO CUSTOMER (email,lastname,firstname) VALUES (?,?,?,?)";
 		try {
-			PreparedStatement addCustomer = (PreparedStatement) conn.prepareStatement(sql_addcustomer);
+			PreparedStatement addCustomer = (PreparedStatement) connection.prepareStatement(sql_addcustomer);
 			addCustomer.setString(0, email);
 			addCustomer.setString(1, ln);
 			addCustomer.setString(2, fn);
@@ -89,11 +105,18 @@ public class Operation {
 			return false;
 		}
 	}
+
+
+    /**
+	 * Get a customer id using email
+	 * @param email customer email
+	 * @return a customer id
+     */
 	public int getCID ( String email) {
 		String sql = "Select cID FROM Customer WHERE EMAIL=?";
 		try {
 			
-			PreparedStatement statement = (PreparedStatement) conn.prepareStatement(sql);
+			PreparedStatement statement = (PreparedStatement) connection.prepareStatement(sql);
 			statement.setString(1, email);
 			ResultSet rs = statement.executeQuery();
 			if ( rs.next()) {
@@ -108,121 +131,221 @@ public class Operation {
 			return -1;
 		}
 	}
-	// need to check if customer in the database already, if not , add to database ( another method)
+	// / need to check if customer in the database already, if not , add to database ( another method)
 	// need another method to get id of available table with given number of seats
+
+
+	/**
+	 * Reserve a table
+	 * @param partySize number of people in a party
+	 * @param d reservation date
+	 * @param tID table id
+	 * @param c a customer
+     * @return true if succeed, false otherwise
+     */
 	public boolean reserveTable(int partySize,Date d,int tID , Customer c) {
 		PreparedStatement statement = null;
 		int customerid = getCID(c.getEmail());
 		String sql_reserve ="INSERT INTO Restaurant.Reservation (reservationDate,partySize,cID,tID) values(?, ?, ?,?)";
+
 		try {
-			conn.setAutoCommit(false);
-			statement = (PreparedStatement) conn.prepareStatement(sql_reserve);
+			connection.setAutoCommit(false);
+			statement = (PreparedStatement) connection.prepareStatement(sql_reserve);
 			statement.setDate(1, d);
 			statement.setInt(2, partySize);
 			statement.setInt(3, customerid);
 			statement.setInt(4, tID);
 			statement.executeUpdate();
-			conn.commit();
+			connection.commit();
 
 			if (statement != null) {
 				statement.close();
 			}
 
-			conn.setAutoCommit(true);
+			connection.setAutoCommit(true);
 
 			return true;
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
 			System.out.println("Failed: "+e.getMessage());
 			return false;
 		}
 	}
+
+
 	/**
-	 * 
-	 * @param cID
+	 * Cancel a reservation
+	 * @param email
 	 * @param d
-	 * @return
-	 */
-	public void cancelReservation(String email, Date d) {
+     * @return
+     */
+	public boolean cancelReservation(String email, Date d) {
+		boolean success = false;
+
 		int cid = getCID(email);
 
 		if (cid != -1) {
 			String queryCancelReservation ="DELETE FROM Reservation WHERE cID=? AND reservationDate=?";
 			try {
-				PreparedStatement statement = (PreparedStatement) conn.prepareStatement(queryCancelReservation);
+				PreparedStatement statement = (PreparedStatement) connection.prepareStatement(queryCancelReservation);
 				statement.setInt(1, cid);
 				statement.setDate(2, d);
 				statement.execute();
 				statement.close();
+				success = true;
 
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
+				e.printStackTrace();
+				success = false;
 				System.out.println("Failed: "+e.getMessage());
+			} finally {
+
+				return success;
 			}
+		} else {
+			return false;
 		}
 
-
-		
 	}
 
-	public void changeReservation(String email , Date date, int partySize) throws SQLException {
+	/**
+	 * Change a reservation
+	 * @param email current user's email
+	 * @param date date to change
+	 * @param partySize number of guests to change
+	 * @return true if success, false otherwise
+	 * @throws SQLException
+     */
+
+	public boolean changeReservation(String email , Date date, int partySize) throws SQLException {
+		boolean success = false;
 		PreparedStatement updateReservation = null;
 		int customerID = getCID(email);
 		String query = "update reservation set reservationDate = ?, partysize = ? where cid = ?";
 
 		try {
-			conn.setAutoCommit(false);
-			updateReservation = (PreparedStatement) conn.prepareStatement(query);
+			connection.setAutoCommit(false);
+			updateReservation = (PreparedStatement) connection.prepareStatement(query);
 			updateReservation.setDate(1, date);
 			updateReservation.setInt(2, partySize);
 			updateReservation.setInt(3, customerID);
 			updateReservation.execute();
 
-			conn.commit();
+			connection.commit();
+			success = true;
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			success = false;
 		} finally {
 			if (updateReservation != null) {
 				updateReservation.close();
 			}
 
-			conn.setAutoCommit(true);
+			connection.setAutoCommit(true);
+			return success;
 		}
 	}
 
 	/**
-	 * SELECT *
-	 * FROM Model.Receipt WHERE cID=? AND date=?
-	 *
-	 * @return
-	 */
-
-	public void rate(int stars, String feedback, Customer customer) throws SQLException {
+	 * Rate a restaurant and give a feedback
+	 * Rate uses SQL INSERT INTO
+	 * @param stars number of stars
+	 * @param feedback user's feedback
+	 * @param customer a customer
+	 * @return true if rate works fine, false otherwise
+	 * @throws SQLException
+     */
+	public boolean rate(int stars, String feedback, Customer customer) throws SQLException {
+		boolean success = false;
 		PreparedStatement insertStatement = null;
 		int customerID = getCID(customer.getEmail());
 		String query = "INSERT INTO Rating (cid, stars, feedback) VALUES (?,?,?)";
 
 		try {
-			conn.setAutoCommit(false);
-			insertStatement = (PreparedStatement) conn.prepareStatement(query);
+			connection.setAutoCommit(false);
+			insertStatement = (PreparedStatement) connection.prepareStatement(query);
 			insertStatement.setInt(1, customerID);
 			insertStatement.setInt(2, stars);
 			insertStatement.setString(3, feedback);
 			insertStatement.execute();
 
-			conn.commit();
+			connection.commit();
+			success = true;
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			success = false;
 		} finally {
 			if (insertStatement != null) {
 				insertStatement.close();
 			}
 
-			conn.setAutoCommit(true);
+			connection.setAutoCommit(true);
+			return success;
 		}
+	}
+
+
+	/**
+	 * Get ratings and feedbacks
+	 * @return list of ratings and feedbacks in Rating objects
+	 * @throws SQLException
+     */
+	public ArrayList<Rating> getRatingsAndFeedbacks() throws SQLException {
+		String sql ="SELECT * FROM Rating";
+
+		try {
+			Statement statement = (Statement) connection.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+			ArrayList<Rating> list = new ArrayList<>();
+
+			while (rs.next()) {
+				Rating rating = new Rating();
+				rating.setcID(rs.getInt("cID"));
+				rating.setFeedback(rs.getString("feedback"));
+				rating.setStars(rs.getInt("stars"));
+
+				list.add(rating);
+
+			}
+
+			if (statement != null) {
+				statement.close();
+			}
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Error! Cannot get ratings and feedbacks");
+			return null;
+		}
+	}
+
+
+	/**
+	 * Get average rating
+	 * @return average rating in double or -1 if fails
+	 * @throws SQLException
+     */
+	public double getAverageRating () throws SQLException {
+		double averageRating;
+		String sql = "SELECT avg(stars)\n" +
+				"FROM Rating";
+		try {
+			Statement statement = (Statement) connection.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+			averageRating = rs.getInt(0);
+			return averageRating;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Error! Cannot get average rating ");
+			return -1;
+		}
+
 	}
 
 
@@ -230,26 +353,94 @@ public class Operation {
 		return null;
 	}
 	//SELECT *	FROM Model.Receipt 	WHERE cID=? AND date=?
-	public int numOfEmployees() {
-		return 0;
+
+
+	/**
+	 * Get the number of employees by position
+	 * @param position position in string
+	 * @return the number of employees by position; 0 if position is not specified, -1 if there are errors
+     */
+	public int numOfEmployeesByType(String position) {
+		String sql = "SELECT count(*)\n" +
+				"FROM Employee\n" +
+				"WHERE position=?";
+		if (position == null) {
+			return 0;
+		}
+
+		try {
+			PreparedStatement statement = (PreparedStatement) connection.prepareStatement(sql);
+			statement.setString(1, position);
+			ResultSet rs = statement.executeQuery();
+			return rs.getInt(0);
+
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Error! Cannot get numeber of employees by position");
+			return -1;
+		}
 	}
-	//SELECT (SELECT count(*) FROM aTable) - count(*) 
-	//FROM Reservation
-	//WHERE date=?
-	public int numOfAvailableTableOn(Date d) {
-		return 0;
+
+
+	/**
+	 * Get a number of available tables on a specific date
+	 * @param date date
+	 * @return number of available tables, 0 if date is not specified, -1 if we have sql exception
+     */
+	public int numOfAvailableTableOn(Date date) {
+		String sql = "select (select count(*) from atable) - count(*)\n" +
+				"from reservation\n" +
+				"where date=?";
+
+		if (date == null) {
+			return 0;
+		}
+
+		try {
+			PreparedStatement statement = (PreparedStatement) connection.prepareStatement(sql);
+			statement.setDate(1, date);
+			ResultSet rs = statement.executeQuery();
+			statement.close();
+			return rs.getInt(0);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("error at number of available table on date");
+			return -1;
+		}
 	}
-	// SELECT mID, itemName, quantityAvailable
-	//FROM MENU
+
+
 	public ArrayList<Item> checkItemQuantity() {
 		return null;
 	}
-	//SELECT sum(subtotal)
-	//FROM Model.Receipt
-	//WHERE date=?
-	public double revenue() {
-		return 0.0;
+
+	/**
+	 * Get revenue by date
+	 * @param date date
+	 * @return revenue, -1 if there is sql error
+     */
+	public double revenue(Date date) {
+		String sql = "SELECT sum(subtotal)\n" +
+				"FROM Receipt\n" +
+				"WHERE date=?";
+
+		try {
+			PreparedStatement statement = (PreparedStatement) connection.prepareStatement(sql);
+			statement.setDate(1, date);
+			ResultSet rs = statement.executeQuery();
+			return rs.getInt(0);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Error at get revenue");
+			return -1;
+		}
 	}
+
+
+
 	/* Track previous items ordered for a customer */
 	/*SELECT itemName, sum(quantity)
 	FROM Model.Receipt JOIN Receipt_Item JOIN Model.Menu
