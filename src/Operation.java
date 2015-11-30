@@ -90,16 +90,17 @@ public class Operation {
      * @return true if succeed, false otherwise
      */
 	public boolean addCustomer(String ln, String fn, String email) {
-		String sql_addcustomer = "INSERT INTO CUSTOMER (email,lastname,firstname) VALUES (?,?,?,?)";
+		String sql_addcustomer = "INSERT INTO CUSTOMER (email,lastname,firstname) VALUES (?,?,?)";
 		try {
 			PreparedStatement addCustomer = (PreparedStatement) connection.prepareStatement(sql_addcustomer);
-			addCustomer.setString(0, email);
-			addCustomer.setString(1, ln);
-			addCustomer.setString(2, fn);
+			addCustomer.setString(1, email);
+			addCustomer.setString(2, ln);
+			addCustomer.setString(3, fn);
 			addCustomer.execute();
 			addCustomer.close();
 			return true;
 		} catch (SQLException e) {
+			e.printStackTrace();
 			System.out.println(e.getMessage());
 			return false;
 		}

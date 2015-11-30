@@ -7,6 +7,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import com.mysql.jdbc.Connection;
 
@@ -31,8 +37,22 @@ public class WelcomeController {
     private Label emailErrorLabel;
     @FXML
     private Label passwordErrorLabel;
-    
+    @FXML
+    private VBox vboxForLabels;
+    @FXML
+    private VBox vboxForTextfields;
+
+    @FXML
+    private VBox vboxForErrorLabels;
+
+    private TextField fnTextfield;
+    private TextField lnTextfield;
+    private Label fnErrorLabel;
+    private Label lnErrorLabel;
+
+
     private boolean adminSelected = true;
+
 
     @FXML
     void toggleAdminCustomer(ActionEvent event) {
@@ -55,6 +75,44 @@ public class WelcomeController {
 
             adminSelected = !adminSelected;
 
+
+
+            // set up sign in or sign up interface for customer
+
+            //Set up labels
+            Label fnLabel = new Label("First Name");
+            fnLabel.setFont(new Font("System", 20));
+            Label lnLabel = new Label("Last Name");
+            lnLabel.setFont(new Font("System", 20));
+            Label emailLabel = new Label("Email");
+            emailLabel.setFont(new Font("System", 20));
+
+            vboxForLabels.getChildren().clear();
+            vboxForLabels.getChildren().addAll(emailLabel, fnLabel, lnLabel);
+
+            //set up text fields
+            vboxForTextfields.getChildren().clear();
+            emailTextField = new TextField();
+            emailTextField.setPromptText("Email");
+            fnTextfield = new TextField();
+            fnTextfield.setPromptText("First Name");
+            lnTextfield = new TextField();
+            lnTextfield.setPromptText("Last Name");
+
+            vboxForTextfields.getChildren().addAll(emailTextField, fnTextfield, lnTextfield);
+
+            //set up error labels
+            vboxForErrorLabels.getChildren().clear();
+            emailErrorLabel = new Label("test");
+            emailErrorLabel.setTextFill(Paint.valueOf("#f5515f"));
+
+            fnErrorLabel = new Label("test1");
+            fnErrorLabel.setTextFill(Paint.valueOf("#f5515f"));
+            lnErrorLabel = new Label("test2");
+            lnErrorLabel.setTextFill(Paint.valueOf("#f5515f"));
+
+            vboxForErrorLabels.setSpacing(63);
+            vboxForErrorLabels.getChildren().addAll(emailErrorLabel, fnErrorLabel, lnErrorLabel);
         } else if (event.getSource() == adminButton) {
             //turn off signup button
             signupButton.setDisable(true);
@@ -83,16 +141,20 @@ public class WelcomeController {
             emailErrorLabel.setText("Please enter your email");
             emailErrorLabel.setVisible(true);
         }
+
         if (password.length() == 0) {
-            passwordErrorLabel.setText("Please enter your password");
+            passwordErrorLabel.setText("Enter your password");
             passwordErrorLabel.setVisible(true);
-            return;
-        
         }
 
-        if (email.length() > 0 && password.length() > 0) {
-            emailErrorLabel.setVisible(false);
-            passwordErrorLabel.setVisible(false);
+
+
+
+        if (email.length() > 0 && password.length() > 0 ) {
+            emailErrorLabel.setText("");
+            fnErrorLabel.setText("");
+            lnErrorLabel.setText("");
+            passwordErrorLabel.setText("");
 
             if (adminSelected) {
                 if (email.equals("admin") && password.equals("admin")) {
@@ -100,8 +162,6 @@ public class WelcomeController {
                     return;
                 } else {
                     emailErrorLabel.setText("Please use 'admin' for email and pass");
-                    emailErrorLabel.setVisible(true);
-
                 }
             } else { // if adminSelected is not true, customerButton is selected
 
@@ -110,20 +170,61 @@ public class WelcomeController {
                     transitionToCustomerScene();
                     return;
                 } else { // if not then clear the fields and ask the users to input or sign up
-                    emailErrorLabel.setText("Check your email or sign up");
+                    emailErrorLabel.setText("Recheck or Sign up");
                     emailErrorLabel.setVisible(true);
-                    passwordErrorLabel.setText("Check your password or sign up");
+                    passwordErrorLabel.setText("Recheck or Sign up");
                     passwordErrorLabel.setVisible(true);
                 }
 
 
             }
+        } else {
+            return;
         }
 
     }
 
+    @FXML
     void signupButtonClicked(ActionEvent event) {
+        String email = emailTextField.getText().trim();
+        String firstName = fnTextfield.getText().trim();
+        String lastName = lnTextfield.getText().trim();
 
+
+        if (email.length() == 0) {
+            emailErrorLabel.setText("Please enter your email");
+            emailErrorLabel.setVisible(true);
+            return;
+        }
+
+        if (firstName.length() == 0) {
+            fnErrorLabel.setText("Enter your first name");
+
+        }
+
+        if (lastName.length() == 0) {
+            lnErrorLabel.setText("Enter your last name");
+
+        }
+
+        if (email.length() > 0 && firstName.length() > 0 && lastName.length() > 0) {
+            emailErrorLabel.setVisible(false);
+
+            if (!adminSelected) {
+                boolean success = operation.addCustomer("", "", email);
+                Popup popup = new Popup();
+                Stage stage = (Stage) signupButton.getScene().getWindow();
+
+                popup.setX(stage.getX() / 2);
+                popup.setY(stage.getY() / 2);
+                popup.getContent().add(new Text("Successful Sign Up"));
+                popup.show(stage);
+
+                return;
+            }
+        } else {
+            return;
+        }
     }
 
     private void transitionToCustomerScene() {
