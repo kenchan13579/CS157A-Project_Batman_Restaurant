@@ -99,23 +99,30 @@ public class WelcomeController {
                     transitionToAdminScene();
                     return;
                 } else {
-                    emailErrorLabel.setText("Please check your email and password");
+                    emailErrorLabel.setText("Please use 'admin' for email and pass");
                     emailErrorLabel.setVisible(true);
 
                 }
             } else { // if adminSelected is not true, customerButton is selected
-                if (email.equals("jon@abc.com") && password.equals("123")) {
+
+                if (operation.getCID(email) != -1) // find the right customer in the database
+                {
                     transitionToCustomerScene();
                     return;
-                } else {
-                    emailErrorLabel.setText("Check Your Email!");
+                } else { // if not then clear the fields and ask the users to input or sign up
+                    emailErrorLabel.setText("Check your email or sign up");
                     emailErrorLabel.setVisible(true);
-                    passwordErrorLabel.setText("Check Your Password!");
+                    passwordErrorLabel.setText("Check your password or sign up");
                     passwordErrorLabel.setVisible(true);
-
                 }
+
+
             }
         }
+
+    }
+
+    void signupButtonClicked(ActionEvent event) {
 
     }
 

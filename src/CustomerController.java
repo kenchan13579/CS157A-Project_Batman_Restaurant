@@ -303,7 +303,10 @@ public class CustomerController {
                 Date date = Date.valueOf(dateTextField.getText().trim());
 
 
-                Customer customer = new Customer(firstname, lastname, email);
+                Customer customer = new Customer();
+                customer.setFirstName(firstname);
+                customer.setLastName(lastname);
+                customer.setEmail(email);
 
                 operation.reserveTable(partySize, date, tableID, customer);
                 contentPane.getChildren().clear();
@@ -659,7 +662,10 @@ public class CustomerController {
 
                 feedback = textArea.getText().trim();
 
-                Customer customer = new Customer("Jon", "Nguyen", "jon@abc.com");
+                Customer customer = new Customer();
+                customer.setFirstName("Jon");
+                customer.setLastName("Nguyen");
+                customer.setEmail("jon@abc.com");
                 try {
                     operation.rate(stars, feedback, customer);
                 } catch (SQLException e1) {
