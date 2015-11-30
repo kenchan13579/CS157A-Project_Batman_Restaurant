@@ -30,8 +30,9 @@ public class CustomerController {
     private Operation operation = new Operation(connection);
     private int currentCustomerID;
 
-    public CustomerController(int currentCustomerID) {
-        this.currentCustomerID = currentCustomerID;
+
+    public void setCurrentCustomerID(int value) {
+        this.currentCustomerID = value;
     }
 
 
@@ -732,12 +733,19 @@ public class CustomerController {
         vbox1.setSpacing(30);
         vbox1.setPadding(new Insets(40, 15, 0, 0));
 
-
-
-        //get data for user profile
-        String email = "jon@abc.com";
-        String firstName = "Jon";
-        String lastName = "Nguyen";
+        //get data from current user
+        Customer customer = operation.getACustomer(currentCustomerID);
+        String email, firstName, lastName;
+        if (customer != null) {
+            //get data for user profile
+            email = customer.getEmail();
+            firstName = customer.getFirstName();
+            lastName = customer.getLastName();
+        } else {
+            email = "";
+            firstName = "";
+            lastName = "";
+        }
 
         //3 labels for data
         Label userEmail = new Label(email);

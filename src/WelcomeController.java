@@ -134,52 +134,72 @@ public class WelcomeController {
 
     @FXML
     void signinButtonClicked(ActionEvent event) {
-        String email = emailTextField.getText().trim();
-        String password = passwordField.getText().trim();
 
-        if (email.length() == 0) {
-            emailErrorLabel.setText("Please enter your email");
-            emailErrorLabel.setVisible(true);
-        }
+        if (adminSelected) { //ADMIN SIGN IN
+            String email = emailTextField.getText().trim();
+            String password = passwordField.getText().trim();
+            if (email.length() == 0) {
+                emailErrorLabel.setText("Please enter your email");
+                emailErrorLabel.setVisible(true);
+            }
 
-        if (password.length() == 0) {
-            passwordErrorLabel.setText("Enter your password");
-            passwordErrorLabel.setVisible(true);
-        }
+            if (password.length() == 0) {
+                passwordErrorLabel.setText("Enter your password");
+                passwordErrorLabel.setVisible(true);
+            }
+
+            if (email.length() > 0 && password.length() > 0) {
+                emailErrorLabel.setText("");
+                fnErrorLabel.setText("");
+                lnErrorLabel.setText("");
+                passwordErrorLabel.setText("");
 
 
-
-
-        if (email.length() > 0 && password.length() > 0 ) {
-            emailErrorLabel.setText("");
-            fnErrorLabel.setText("");
-            lnErrorLabel.setText("");
-            passwordErrorLabel.setText("");
-
-            if (adminSelected) {
                 if (email.equals("admin") && password.equals("admin")) {
                     transitionToAdminScene();
                     return;
                 } else {
                     emailErrorLabel.setText("Please use 'admin' for email and pass");
                 }
-            } else { // if adminSelected is not true, customerButton is selected
+            }
 
-                if (operation.getCID(email) != -1) // find the right customer in the database
+        } else { // CUSTOMER SIGN IN
+            String email = emailTextField.getText().trim();
+            String firstName = fnTextfield.getText().trim();
+            String lastName = lnTextfield.getText().trim();
+
+            if (email.length() == 0) {
+                emailErrorLabel.setText("Please enter your email");
+                emailErrorLabel.setVisible(true);
+            } else {
+                emailErrorLabel.setText("");
+            }
+
+
+            if (firstName.length() == 0) {
+                fnErrorLabel.setText("Enter your first name");
+            } else {
+                fnErrorLabel.setText("");
+            }
+
+            if (lastName.length() == 0) {
+                lnErrorLabel.setText("Enter your last name");
+            } else {
+                lnErrorLabel.setText("");
+            }
+
+            if (email.length() > 0 && firstName.length() > 0 && lastName.length() > 0) {
+                int id = operation.getCID(email);
+                if (id != -1) // find the right customer in the database
                 {
-                    transitionToCustomerScene();
-                    return;
+                    transitionToCustomerScene(id);
                 } else { // if not then clear the fields and ask the users to input or sign up
                     emailErrorLabel.setText("Recheck or Sign up");
                     emailErrorLabel.setVisible(true);
                     passwordErrorLabel.setText("Recheck or Sign up");
                     passwordErrorLabel.setVisible(true);
                 }
-
-
             }
-        } else {
-            return;
         }
 
     }
@@ -195,14 +215,20 @@ public class WelcomeController {
             emailErrorLabel.setText("Please enter your email");
             emailErrorLabel.setVisible(true);
             return;
+        } else {
+            emailErrorLabel.setText("");
         }
 
         if (firstName.length() == 0) {
             fnErrorLabel.setText("Enter your first name");
+        } else {
+            fnErrorLabel.setText("");
         }
 
         if (lastName.length() == 0) {
             lnErrorLabel.setText("Enter your last name");
+        } else {
+            lnErrorLabel.setText("");
         }
 
         if (email.length() > 0 && firstName.length() > 0 && lastName.length() > 0) {
@@ -215,7 +241,7 @@ public class WelcomeController {
                 emailErrorLabel.setText(String.valueOf(success));
 
                 if (success) {
-                    transitionToCustomerScene();
+                    transitionToCustomerScene(operation.getCID(email));
                 } else {
                     emailErrorLabel.setText("Sign Up Error! Try Again!");
                     return;
@@ -227,22 +253,29 @@ public class WelcomeController {
         }
     }
 
-    private void transitionToCustomerScene() {
+    private void transitionToCustomerScene(int customerID) {
         //get reference to WelcomeScreen stage
         Stage stage = (Stage) customerButton.getScene().getWindow();
 
         //load up CustomerScene FXML document
         Parent root = null;
+        FXMLLoader loader = null;
         try {
-            root = FXMLLoader.load(getClass().getResource("CustomerScene.fxml"));
+            loader = new FXMLLoader(getClass().getResource("CustomerScene.fxml"));
+            root = loader.load();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        Scene scene = new Scene(root, 1024, 720);
+        CustomerController controller = loader.getController();
+        controller.setCurrentCustomerID(customerID);
+
+        Scene scene = new Scene(root, 1028, 720);
         stage.setTitle("Customer Dashboard");
         stage.setScene(scene);
         stage.show();
+
     }
 
     private void transitionToAdminScene() {

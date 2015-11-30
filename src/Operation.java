@@ -19,8 +19,8 @@ public class Operation {
 	public Operation(Connection c) {
 		this.connection = c;
 	}
-	
-	
+
+
 	/**
 	 * retrieve food items from database
 	 * @param type beverage or food , or null for combination
@@ -48,7 +48,7 @@ public class Operation {
 			rs.close();
 			statement.close();
 			return menu;
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -69,11 +69,11 @@ public class Operation {
 			ResultSet rs = statement.executeQuery();
 			if ( rs.next()) {
 				res = rs.getInt(0);
-			} 
+			}
 			statement.close();
 			rs.close();
 			return res;
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -120,15 +120,19 @@ public class Operation {
 			statement.setInt(1, id);
 			ResultSet rs = statement.executeQuery();
 
-			Customer customer = new Customer();
-			customer.setEmail(rs.getString("email"));
-			customer.setFirstName(rs.getString("firstname"));
-			customer.setLastName(rs.getString("lastname"));
-			customer.setID(rs.getInt("cid"));
+			if (rs.next()) {
+				Customer customer = new Customer();
+				customer.setEmail(rs.getString("email"));
+				customer.setFirstName(rs.getString("firstName"));
+				customer.setLastName(rs.getString("lastName"));
+				customer.setID(rs.getInt("cid"));
 
-			if (statement != null) statement.close();
+				if (statement != null) statement.close();
 
-			return customer;
+				return customer;
+			} else {
+				return null;
+			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -145,7 +149,7 @@ public class Operation {
 	public int getCID ( String email) {
 		String sql = "Select cID FROM Customer WHERE EMAIL=?";
 		try {
-			
+
 			PreparedStatement statement = (PreparedStatement) connection.prepareStatement(sql);
 			statement.setString(1, email);
 			ResultSet rs = statement.executeQuery();
@@ -154,7 +158,7 @@ public class Operation {
 			} else {
 				return -1; // not exist
 			}
-		
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			System.out.println("Failed: "+e.getMessage());
@@ -195,7 +199,7 @@ public class Operation {
 			connection.setAutoCommit(true);
 
 			return true;
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
