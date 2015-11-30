@@ -103,12 +103,12 @@ public class WelcomeController {
 
             //set up error labels
             vboxForErrorLabels.getChildren().clear();
-            emailErrorLabel = new Label("test");
+            emailErrorLabel = new Label();
             emailErrorLabel.setTextFill(Paint.valueOf("#f5515f"));
 
-            fnErrorLabel = new Label("test1");
+            fnErrorLabel = new Label();
             fnErrorLabel.setTextFill(Paint.valueOf("#f5515f"));
-            lnErrorLabel = new Label("test2");
+            lnErrorLabel = new Label();
             lnErrorLabel.setTextFill(Paint.valueOf("#f5515f"));
 
             vboxForErrorLabels.setSpacing(63);
@@ -199,28 +199,28 @@ public class WelcomeController {
 
         if (firstName.length() == 0) {
             fnErrorLabel.setText("Enter your first name");
-
         }
 
         if (lastName.length() == 0) {
             lnErrorLabel.setText("Enter your last name");
-
         }
 
         if (email.length() > 0 && firstName.length() > 0 && lastName.length() > 0) {
-            emailErrorLabel.setVisible(false);
+            emailErrorLabel.setText("");
+            fnErrorLabel.setText("");
+            lnErrorLabel.setText("");
 
             if (!adminSelected) {
-                boolean success = operation.addCustomer("", "", email);
-                Popup popup = new Popup();
-                Stage stage = (Stage) signupButton.getScene().getWindow();
+                boolean success = operation.addCustomer(lastName, firstName, email);
+                emailErrorLabel.setText(String.valueOf(success));
 
-                popup.setX(stage.getX() / 2);
-                popup.setY(stage.getY() / 2);
-                popup.getContent().add(new Text("Successful Sign Up"));
-                popup.show(stage);
+                if (success) {
+                    transitionToCustomerScene();
+                } else {
+                    emailErrorLabel.setText("Sign Up Error! Try Again!");
+                    return;
+                }
 
-                return;
             }
         } else {
             return;
