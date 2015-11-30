@@ -106,6 +106,36 @@ public class Operation {
 		}
 	}
 
+	/**
+	 * Get a customer by id
+	 * @param id customer id
+	 * @return a customer
+     */
+	public Customer getACustomer(int id) {
+		String sql = "Select * From Customer where cid = ?";
+
+		try {
+
+			PreparedStatement statement = (PreparedStatement) connection.prepareStatement(sql);
+			statement.setInt(1, id);
+			ResultSet rs = statement.executeQuery();
+
+			Customer customer = new Customer();
+			customer.setEmail(rs.getString("email"));
+			customer.setFirstName(rs.getString("firstname"));
+			customer.setLastName(rs.getString("lastname"));
+			customer.setID(rs.getInt("cid"));
+
+			if (statement != null) statement.close();
+
+			return customer;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Error at get a customer");
+			return null;
+		}
+	}
 
     /**
 	 * Get a customer id using email

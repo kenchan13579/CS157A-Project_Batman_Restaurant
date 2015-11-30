@@ -28,6 +28,13 @@ public class CustomerController {
 
     private Connection connection = ConnectionFactory.getMYSQLConnection();
     private Operation operation = new Operation(connection);
+    private int currentCustomerID;
+
+    public CustomerController(int currentCustomerID) {
+        this.currentCustomerID = currentCustomerID;
+    }
+
+
     @FXML
     private Label titleLabel;
     @FXML
@@ -724,6 +731,8 @@ public class CustomerController {
         vbox1.getChildren().addAll(emailLabel, firstNameLabel, lastNameLabel);
         vbox1.setSpacing(30);
         vbox1.setPadding(new Insets(40, 15, 0, 0));
+
+
 
         //get data for user profile
         String email = "jon@abc.com";
