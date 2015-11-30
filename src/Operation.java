@@ -1,15 +1,14 @@
-import Model.Customer;
-import Model.Item;
-import Model.Rating;
-import Model.Receipt;
+import Model.*;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
 
+import java.sql.Array;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -440,50 +439,197 @@ public class Operation {
 	}
 
 
+	/**
+	 * Track previous items ordered by a customer
+	 * @param customerID a customer id
+	 * @return a list of items that customer ordered. Item objects contain item name and total quantity
+     */
+	public ArrayList<Item> getItemsOrderedByCustomer(int customerID) {
+		String sql = "SELECT itemName, sum(quantity)\n" +
+				"\tFROM Receipt JOIN Receipt_Item JOIN Menu\n" +
+				"\tWHERE cID=?\n" +
+				"\tGROUP BY itemName";
 
-	/* Track previous items ordered for a customer */
-	/*SELECT itemName, sum(quantity)
-	FROM Model.Receipt JOIN Receipt_Item JOIN Model.Menu
-	WHERE cID=?
-	GROUP BY itemName
+		try {
+			PreparedStatement statement = (PreparedStatement) connection.prepareStatement(sql);
+			statement.setInt(1, customerID);
+			ResultSet rs = statement.executeQuery();
+			ArrayList<Item> list = new ArrayList<>();
+			while (rs.next()) {
+				String itemName = rs.getString("itemName");
+				int sum = rs.getInt(1);
+				Item item = new Item();
+				item.setItemName(itemName);
+				item.setQuantityAvailable(sum);
+				list.add(item);
+			}
 
-	/* Get total price of a meal */
-	/*SELECT subtotal
-	FROM Model.Receipt
-	WHERE receiptID=?*/
+			if (statement != null) {
+				statement.close();
+			}
 
-	/* Model.Customer give feedback and rating */
-	/*INSERT INTO Rating values(null, cID, rating, feedback)*/
+			return list;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Error at get items ordered by a customer");
+			return null;
+		}
+	}
 
 
-	/* Get feedback and ratings */
-	/*SELECT stars, feedback
-	//FROM Rating
+	/**
+	 * Get subtotal price of a meal
+	 * @param receiptID receipt ID
+	 * @return a subtotal price of a meal
+     */
+	public double getTotalPriceOfAMeal(int receiptID) {
+		String sql = "SELECT subtotal\n" +
+				"\tFROM Receipt\n" +
+				"\tWHERE receiptID=?";
 
-	/* Get average rating */
-	//SELECT avg(stars)
-	//FROM Rating
+		try {
+			PreparedStatement statement = (PreparedStatement) connection.prepareStatement(sql);
+			statement.setInt(1, receiptID);
+			ResultSet rs = statement.executeQuery();
 
-	/* Get a list of spenders who spend more than 100  */
-/*	SELECT first, last
-	FROM CUSTOMER JOIN RECEIPT
-	GROUP BY cID
-	HAVING SUBTOTAL > 100;
-*/
-	/* List employees who are also customers */
-	/*SELECT first, last
-	FROM Model.Employee
-	WHERE EXISTS (
-		SELECT *
-		FROM Model.Customer
-		WHERE Model.Employee.first=Model.Customer.first AND Model.Employee.last=Model.Customer.last)
+			double subtotal = rs.getInt(0);
 
-	/* List of customers who do not tip */
-	/*SELECT *
-	FROM Model.Customer
-	WHERE EXISTS (
-		SELECT *
-		FROM Model.Receipt
-		WHERE Model.Customer.cID=Model.Receipt.cID AND gratuity=0)
-*/
+			if (statement != null) {
+				statement.close();
+			}
+
+			return subtotal;
+
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Error at get total price of a meal");
+			return -1;
+		}
+	}
+
+
+	/**
+	 * Get a list of spenders who spend more than 100
+	 * @return a list of customers with id, first name, last name
+     */
+	public ArrayList<Customer> getCustomersWhoSpendsMoreThan100() {
+		String sql = "SELECT cid, firstName, lastName\n" +
+				"\tFROM CUSTOMER JOIN RECEIPT\n" +
+				"\tGROUP BY cID\n" +
+				"\tHAVING SUBTOTAL > 100";
+
+		try {
+			Statement statement = (Statement) connection.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+			ArrayList<Customer> list = new ArrayList<>();
+			while (rs.next()) {
+				int cid = rs.getInt("cid");
+				String firstName = rs.getString("firstName");
+				String lastName = rs.getString("lastName");
+				Customer customer = new Customer();
+				customer.setFirstName(firstName);
+				customer.setLastName(lastName);
+				customer.setID(cid);
+				list.add(customer);
+			}
+
+			if (statement != null) {
+				statement.close();
+
+			}
+
+			return list;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Error at get customer who spends more than 100");
+			return null;
+		}
+	}
+
+	/**
+	 * Get a list of employees who are also customers
+	 * @return a list of employees
+     */
+	public ArrayList<Employee> getEmployeesWhoAreCustomers() {
+		String sql = "SELECT * FROM Employee\n" +
+				"\tWHERE EXISTS (\n" +
+				"\t\tSELECT *\n" +
+				"\t\tFROM Customer\n" +
+				"\t\tWHERE Employee.firstName = Customer.firstName AND Employee.lastName = Customer.lastName)";
+
+		try {
+			Statement statement = (Statement) connection.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+			ArrayList<Employee> list = new ArrayList<>();
+
+			while (rs.next()) {
+				String firstName = rs.getString("firstName");
+				String lastName = rs.getString("lastName");
+				int id = rs.getInt("eID");
+				String position = rs.getString("position");
+				String email = rs.getString("email");
+				Date lastWorked = rs.getDate("lastWorked");
+
+				Employee em = new Employee(firstName, lastName, email, position, lastWorked.toString());
+				list.add(em);
+			}
+
+			if (statement != null) {
+				statement.close();
+			}
+
+			return list;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Error at get a list of employees who are also customers");
+			return null;
+		}
+	}
+
+	/**
+	 * Get customers who do not tip
+	 * @return a list of customers
+     */
+	public ArrayList<Customer> getCustomersWhoDoNotTip() {
+		String sql = "SELECT *\n" +
+				"\tFROM Customer\n" +
+				"\tWHERE EXISTS (\n" +
+				"\t\tSELECT *\n" +
+				"\t\tFROM Receipt\n" +
+				"\t\tWHERE Customer.cID=Receipt.cID AND gratuity=0)";
+
+		try {
+			Statement statement = (Statement) connection.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+			ArrayList<Customer> list = new ArrayList<>();
+
+			while (rs.next()) {
+				int customerID = rs.getInt("cid");
+				String firstName = rs.getString("firstName");
+				String lastName = rs.getString("lastName");
+				String email = rs.getString("email");
+				Date lastVisited = rs.getDate("lastVisited");
+				int discount = rs.getInt("discount");
+
+				Customer customer = new Customer(firstName, lastName, email, lastVisited.toString(), discount);
+
+				list.add(customer);
+			}
+
+			if (statement != null) {
+				statement.close();
+			}
+
+			return list;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Error at get customer who do not tip");
+			return null;
+		}
+	}
 }

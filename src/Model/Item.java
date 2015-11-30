@@ -7,6 +7,8 @@ public class Item {
 	private String description;
 	private int quantityAvailable;
 
+	public Item() {};
+
 	public Item(String itemName, double price, String type, String description, int quantityAvailable) {
 		this.itemName = itemName;
 		this.price = price;
