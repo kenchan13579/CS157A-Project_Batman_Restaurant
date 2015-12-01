@@ -128,6 +128,8 @@ public class WelcomeController {
                     "    -fx-text-fill: #000000a9;");
 
             adminSelected = !adminSelected;
+
+
         }
 
     }
