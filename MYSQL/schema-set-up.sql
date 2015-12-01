@@ -31,7 +31,7 @@ cid INT NOT NULL AUTO_INCREMENT,
 firstName VARCHAR(25) NOT NULL,
 lastName VARCHAR(25) NOT NULL,
 email VARCHAR(25) NOT NULL,
-lastVisited DATE NOT NULL,
+lastVisited DATE NOT NULL DEFAULT 0,
 discount INT NOT NULL DEFAULT 0,
 PRIMARY KEY (cid) );
 
@@ -142,9 +142,9 @@ DROP PROCEDURE IF EXISTS archiveReceipts;
 DELIMITER $$
 CREATE PROCEDURE archiveReceipts (IN oldDate DATE)
 BEGIN
-	INSERT INTO arc_Receipt VALUES ( SELECT * FROM Model.Receipt WHERE date<oldDate);
+	INSERT INTO arc_Receipt  ( SELECT * FROM Receipt WHERE date<oldDate);
 	DELETE FROM Receipt WHERE date<oldDate;
-END;
+END$$
 DELIMITER ;
 
 /* archive customers */
@@ -152,9 +152,9 @@ DROP PROCEDURE IF EXISTS archiveCustomers;
 DELIMITER $$
 CREATE PROCEDURE archiveCustomers (IN oldDate DATE)
 BEGIN
-	INSERT INTO arc_Customer VALUES ( SELECT * FROM Model.Customer WHERE lastVisited<oldDate);
+	INSERT INTO arc_Customer  ( SELECT * FROM Customer WHERE lastVisited<oldDate);
 	DELETE FROM Customer WHERE lastVisited<oldDate;
-END;
+END$$
 DELIMITER ;
 
 /* archive employees */
@@ -162,8 +162,8 @@ DROP PROCEDURE IF EXISTS archiveEmployees;
 DELIMITER $$
 CREATE PROCEDURE archiveEmployees(IN oldDate DATE)
 BEGIN
-	INSERT INTO arc_Employee VALUES ( SELECT * FROM Model.Employee WHERE lastWorked<oldDate);
+	INSERT INTO arc_Employee  ( SELECT * FROM Employee WHERE lastWorked<oldDate);
 	DELETE FROM Employee WHERE lastWorked<oldDate;
-END;
+END$$
 DELIMITER ;
 
