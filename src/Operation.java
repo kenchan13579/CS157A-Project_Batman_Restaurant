@@ -702,6 +702,42 @@ public class Operation {
 	}
 
 	/**
+	 * Get all customers
+	 * @return a list of all customers
+     */
+	public ArrayList<Customer> getAllCustomers() {
+		String sql = "SELECT * FROM Customer";
+
+		try {
+			Statement statement = (Statement) connection.createStatement();
+			ArrayList<Customer> list = new ArrayList<>();
+			ResultSet rs = statement.executeQuery(sql);
+
+			while (rs.next()) {
+				int cid = rs.getInt("cid");
+				String fn = rs.getString("firstName");
+				String ln = rs.getString("lastName");
+				String email = rs.getString("email");
+				String lastVisited = rs.getString("lastVisited");
+				int discount = rs.getInt("discount");
+
+				Customer customer = new Customer(fn, ln, email, lastVisited, discount);
+				list.add(customer);
+			}
+
+			if (statement != null) {
+				statement.close();
+			}
+
+			return list;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
 	 * Get customers who do not tip
 	 * @return a list of customers
      */
@@ -740,6 +776,143 @@ public class Operation {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("Error at get customer who do not tip");
+			return null;
+		}
+	}
+
+	/**
+	 * Archive 3 tables, customers, employees, and receipts
+	 * @return true if archive successfully, false otherwise
+     */
+	public boolean archive() {
+		String aEmployeesSQL = "Call archiveEmployees(\"2015-12-12\")";
+		String aCustomersSQL = "Call archiveCustomers('2015-12-12')";
+		String aReceiptsSQL = "Call archiveReceipts('2015-12-12')";
+
+		try {
+			Statement statement = (Statement) connection.createStatement();
+//			statement.execute(aCustomersSQL);
+			statement.execute(aEmployeesSQL);
+//			statement.execute(aReceiptsSQL);
+
+			if (statement != null) {
+				statement.close();
+
+			}
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+			return false;
+		}
+	}
+
+	/**
+	 * Get all archived Customers
+	 * @return a list of all archived customers
+     */
+	public ArrayList<Customer> getArchivedCustomers() {
+		String sql = "SELECT * From arc_customer";
+		try {
+			Statement statement = (Statement) connection.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+			ArrayList<Customer> list = new ArrayList<>();
+			while (rs.next()) {
+				int id = rs.getInt("cid");
+				String firstname = rs.getString("firstName");
+				String lastname = rs.getString("lastName");
+				String email = rs.getString("email");
+				String lastVisited = rs.getDate("lastVisited").toString();
+				int discount = rs.getInt("discount");
+
+				Customer customer = new Customer(firstname, lastname, email, lastVisited, discount);
+//				customer.setId(id);
+				list.add(customer);
+			}
+
+			if (statement != null) statement.close();
+
+			return list;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+			return null;
+		}
+	}
+
+
+	/**
+	 * Get All archived employees
+	 * @return a list of all archived employees
+     */
+	public ArrayList<Employee> getArchivedEmployees() {
+		String sql = "SELECT * From ARC_EMPLOYEE";
+
+		try {
+			Statement statement = (Statement) connection.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+			ArrayList<Employee> list = new ArrayList<>();
+
+			while (rs.next()) {
+				int eid = rs.getInt("eid");
+				String fn = rs.getString("firstName");
+				String ln = rs.getString("lastName");
+				String position = rs.getString("position");
+				String email = rs.getString("email");
+				String lastworked = rs.getDate("lastworked").toString();
+
+				Employee em = new Employee(fn, ln, email, position, lastworked);
+//				em.setId(eid);
+
+				list.add(em);
+			}
+
+			if (statement != null) statement.close();
+
+			return  list;
+
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+			return null;
+		}
+	}
+
+	/**
+	 * Get all archived receipts
+	 * @return a list of all archived receipts
+     */
+	public ArrayList<Receipt> getArchivedReceipts () {
+		String sql = "SELECT * From arc_receipt";
+
+		try {
+			Statement statement = (Statement) connection.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+			ArrayList<Receipt> list = new ArrayList<>();
+
+			while (rs.next()) {
+				int rid = rs.getInt("rid");
+				int eid = rs.getInt("eid");
+				int cid = rs.getInt("cid");
+				double subtotal = rs.getDouble("subtotal");
+				double gratuity = rs.getDouble("gratuity");
+				String billDate = rs.getDate("billDate").toString();
+
+				Receipt receipt = new Receipt(rid, eid, cid, subtotal, gratuity, billDate);
+				list.add(receipt);
+			}
+
+			if (statement != null) {
+				statement.close();
+			}
+
+			return list;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
 			return null;
 		}
 	}

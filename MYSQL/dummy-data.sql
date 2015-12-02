@@ -87,7 +87,7 @@ INSERT INTO RATING (cID, stars, feedback) VALUES (4, 5,  "Love the soup, great f
 
 # RECEIPT
 INSERT INTO RECEIPT (eId, cID, subtotal, gratuity, billDate) VALUES (1, 2, 123.12, 10.5, curdate());
-INSERT INTO RECEIPT (eId, cID, subtotal, gratuity, billDate) VALUES (2, 3, 43.97, 12.5, curdate());
+INSERT INTO RECEIPT (eId, cID, subtotal, gratuity, billDate) VALUES (2, 3, 43.97, 0, curdate());
 INSERT INTO RECEIPT (eID, cID, subtotal, gratuity, billDate) VALUES (5, 5, 78.87, 22.5, curdate());
 INSERT INTO RECEIPT (eID, cID, subtotal, gratuity, billDate) VALUES (3, 7, 343.35, 55, curdate());
 
