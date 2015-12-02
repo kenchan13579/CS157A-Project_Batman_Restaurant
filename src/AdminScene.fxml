@@ -16,13 +16,14 @@
     <RowConstraints maxHeight="640.0" minHeight="10.0" prefHeight="640.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <VBox alignment="CENTER" spacing="30.0" style="-fx-background-color: #30333A;" GridPane.rowIndex="1">
+      <VBox alignment="CENTER" spacing="20.0" style="-fx-background-color: #30333A;" GridPane.rowIndex="1">
          <children>
             <Button fx:id="reservationsButton" mnemonicParsing="false" onAction="#reservationsButtonClicked" prefHeight="73.0" prefWidth="39.0" />
-            <Button fx:id="customersButton" mnemonicParsing="false" prefHeight="59.0" prefWidth="54.0" />
-            <Button fx:id="employeesButton" mnemonicParsing="false" prefHeight="59.0" prefWidth="56.0" />
-            <Button fx:id="receiptButton" mnemonicParsing="false" prefHeight="57.0" prefWidth="37.0" />
-            <Button fx:id="ratingButton" mnemonicParsing="false" prefHeight="55.0" prefWidth="63.0" />
+            <Button fx:id="customersButton" mnemonicParsing="false" onAction="#customersButtonClicked" prefHeight="59.0" prefWidth="54.0" />
+            <Button fx:id="employeesButton" mnemonicParsing="false" onAction="#employeesButtonClicked" prefHeight="59.0" prefWidth="56.0" />
+            <Button fx:id="receiptButton" mnemonicParsing="false" onAction="#receiptButtonClicked" prefHeight="57.0" prefWidth="37.0" />
+            <Button fx:id="ratingButton" mnemonicParsing="false" onAction="#ratingButtonClicked" prefHeight="55.0" prefWidth="63.0" />
+            <Button fx:id="archiveButton" mnemonicParsing="false" onAction="#archiveButtonClicked" prefHeight="55.0" prefWidth="63.0" />
          </children>
       </VBox>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">

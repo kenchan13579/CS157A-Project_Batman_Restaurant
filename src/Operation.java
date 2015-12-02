@@ -339,7 +339,7 @@ public class Operation {
 
 			while (rs.next()) {
 				Rating rating = new Rating();
-				rating.setcID(rs.getInt("cID"));
+				rating.setCID(rs.getInt("cID"));
 				rating.setFeedback(rs.getString("feedback"));
 				rating.setStars(rs.getInt("stars"));
 
@@ -365,14 +365,19 @@ public class Operation {
 	 * @throws SQLException
      */
 	public double getAverageRating () throws SQLException {
-		double averageRating;
-		String sql = "SELECT avg(stars)\n" +
+		String sql = "SELECT avg(stars)" +
 				"FROM Rating";
 		try {
 			Statement statement = (Statement) connection.createStatement();
 			ResultSet rs = statement.executeQuery(sql);
-			averageRating = rs.getInt(0);
-			return averageRating;
+			double avgRating = 0;
+
+			if (rs.next()) {
+				avgRating = rs.getDouble(1);
+			}
+
+			if (statement != null) statement.close();
+			return avgRating;
 
 		} catch (SQLException e) {
 			e.printStackTrace();
