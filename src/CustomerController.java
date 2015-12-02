@@ -28,6 +28,14 @@ public class CustomerController {
 
     private Connection connection = ConnectionFactory.getMYSQLConnection();
     private Operation operation = new Operation(connection);
+    private int currentCustomerID;
+
+
+    public void setCurrentCustomerID(int value) {
+        this.currentCustomerID = value;
+    }
+
+
     @FXML
     private Label titleLabel;
     @FXML
@@ -303,7 +311,10 @@ public class CustomerController {
                 Date date = Date.valueOf(dateTextField.getText().trim());
 
 
-                Customer customer = new Customer(firstname, lastname, email);
+                Customer customer = new Customer();
+                customer.setFirstName(firstname);
+                customer.setLastName(lastname);
+                customer.setEmail(email);
 
                 operation.reserveTable(partySize, date, tableID, customer);
                 contentPane.getChildren().clear();
@@ -659,7 +670,10 @@ public class CustomerController {
 
                 feedback = textArea.getText().trim();
 
-                Customer customer = new Customer("Jon", "Nguyen", "jon@abc.com");
+                Customer customer = new Customer();
+                customer.setFirstName("Jon");
+                customer.setLastName("Nguyen");
+                customer.setEmail("jon@abc.com");
                 try {
                     operation.rate(stars, feedback, customer);
                 } catch (SQLException e1) {
@@ -719,10 +733,19 @@ public class CustomerController {
         vbox1.setSpacing(30);
         vbox1.setPadding(new Insets(40, 15, 0, 0));
 
-        //get data for user profile
-        String email = "jon@abc.com";
-        String firstName = "Jon";
-        String lastName = "Nguyen";
+        //get data from current user
+        Customer customer = operation.getACustomer(currentCustomerID);
+        String email, firstName, lastName;
+        if (customer != null) {
+            //get data for user profile
+            email = customer.getEmail();
+            firstName = customer.getFirstName();
+            lastName = customer.getLastName();
+        } else {
+            email = "";
+            firstName = "";
+            lastName = "";
+        }
 
         //3 labels for data
         Label userEmail = new Label(email);

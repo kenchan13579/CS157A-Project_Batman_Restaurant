@@ -1,48 +1,81 @@
 package Model;
 
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 public class Item {
-	private String itemName;
-	private double price;
-	private String type;
-	private String description;
-	private int quantityAvailable;
-	public Item(String itemName, double price, String desc) {
-		this.setItemName(itemName);
-		this.setPrice(price);
-		//this.setType(type);
-		this.setDescription(desc);
-		//this.setQuantityAvailable(q);
+	private SimpleStringProperty itemName;
+	private SimpleDoubleProperty price;
+	private SimpleStringProperty type;
+	private SimpleStringProperty description;
+	private SimpleIntegerProperty quantityAvailable;
+
+	public Item() {
+		itemName = new SimpleStringProperty();
+		price = new SimpleDoubleProperty();
+		type = new SimpleStringProperty();
+		description = new SimpleStringProperty();
+		quantityAvailable = new SimpleIntegerProperty();
+	};
+
+	public Item(String itemName, double price, String type, String description, int quantityAvailable) {
+		this.itemName = new SimpleStringProperty(itemName);
+		this.price = new SimpleDoubleProperty(price);
+		this.type = new SimpleStringProperty(type);
+		this.description = new SimpleStringProperty(description);
+		this.quantityAvailable = new SimpleIntegerProperty(quantityAvailable);
 	}
-	/*public int getQuantityAvailable() {
-		return quantityAvailable;
+
+
+	public Item(String itemName, double price, String description) {
+		this.itemName = new SimpleStringProperty(itemName);
+		this.price = new SimpleDoubleProperty(price);
+		this.description = new SimpleStringProperty(description);
+		this.quantityAvailable = new SimpleIntegerProperty(0);
+		this.type = new SimpleStringProperty("");
 	}
-	public void setQuantityAvailable(int quantityAvailable) {
-		this.quantityAvailable = quantityAvailable;
-	}*/
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	/*public String getType() {
-		return type;
-	}
-	public void setType(String type) {
-		this.type = type;
-	}*/
-	public double getPrice() {
-		return price;
-	}
-	public void setPrice(double price) {
-		this.price = price;
-	}
+
 	public String getItemName() {
-		return itemName;
+		return itemName.get();
 	}
+
 	public void setItemName(String itemName) {
-		this.itemName = itemName;
+		this.itemName.set(itemName);
 	}
+
+	public double getPrice() {
+		return price.get();
+	}
+
+	public void setPrice(double price) {
+		this.price.set(price);
+	}
+
+	public String getType() {
+		return type.get();
+	}
+
+	public void setType(String type) {
+		this.type.set(type);
+	}
+
+	public String getDescription() {
+		return description.get();
+	}
+
+	public void setDescription(String description) {
+		this.description.set(description);
+	}
+
+	public int getQuantityAvailable() {
+		return quantityAvailable.get();
+	}
+
+	public void setQuantityAvailable(int quantityAvailable) {
+		this.quantityAvailable.set(quantityAvailable);
+	}
+
 	public String toString(){
 		return getItemName() +" | "+getDescription() +" | $" + getPrice() ; 
 	}

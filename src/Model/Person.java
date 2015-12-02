@@ -1,31 +1,81 @@
 package Model;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 public class Person {
-	private String firstName;
-	private String lastName;
-	private String email;
-	public Person(String fn , String ln , String email) {
-		this.firstName = fn;
-		this.lastName = ln;
-		this.email = email;
+	private SimpleIntegerProperty id;
+	private SimpleStringProperty firstName;
+	private SimpleStringProperty lastName;
+	private SimpleStringProperty email;
+
+
+	/**
+	 * Default constructor
+	 */
+	public Person() {
+		id = new SimpleIntegerProperty(0);
+		firstName = new SimpleStringProperty("");
+		lastName = new SimpleStringProperty("");
+		email = new SimpleStringProperty("");
 	}
+
+
+	/**
+	 * Constructor for Person
+	 * @param firstName
+	 * @param lastName
+	 * @param email
+     */
+	public Person(String firstName, String lastName, String email) {
+		this.firstName = new SimpleStringProperty(firstName);
+		this.lastName = new SimpleStringProperty(lastName);
+		this.email = new SimpleStringProperty(email);
+	}
+
+
+	/**
+	 * Constructor with a given ID, likely for use with getting a person out of database
+	 * @param id
+     */
+
+
+	// Getters and setters
+
+	public Person(int id) {
+		this.id = new SimpleIntegerProperty(id);
+	}
+
+	public int getId() {
+		return id.get();
+	}
+
+	public void setId(int value) {
+		this.id.set(value);
+
+	}
+
 	public String getFirstName() {
-		return firstName;
+		return firstName.get();
 	}
+
 	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+		this.firstName.set(firstName);
 	}
+
 	public String getLastName() {
-		return lastName;
+		return lastName.get();
 	}
+
 	public void setLastName(String lastName) {
-		this.lastName = lastName;
+		this.lastName.set(lastName);
 	}
+
 	public String getEmail() {
-		return email;
+		return email.get();
 	}
+
 	public void setEmail(String email) {
-		this.email = email;
+		this.email.set(email);
 	}
-	
 }

@@ -57,6 +57,7 @@ INSERT INTO CUSTOMER (firstname,lastname,email) VALUES ("Kim" ,"P","kimp@sjsu.ed
 INSERT INTO CUSTOMER (firstname,lastname,email) VALUES ("Sami" ,"Khuri","samikhuri@sjsu.edu");
 INSERT INTO CUSTOMER (firstname,lastname,email) VALUES ("Steve" ,"Jobs","stevejobs@apple.com");
 INSERT INTO CUSTOMER (firstname,lastname,email) VALUES ("Jon" ,"Nguyen","jon@abc.com");
+INSERT INTO CUSTOMER (firstname,lastname,email) VALUES ("Phuc" ,"N","phucn@batman.com");
 
 
 

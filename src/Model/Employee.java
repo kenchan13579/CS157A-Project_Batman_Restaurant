@@ -1,18 +1,47 @@
 package Model;
 
+import javafx.beans.property.SimpleStringProperty;
+
 public class Employee extends Person{
-	private String position;
-	public Employee(String fn, String ln , String email , String position) {
-		super(fn, ln, email);
-		this.position = position;
-		// TODO Auto-generated constructor stub
+	private SimpleStringProperty position;
+	private SimpleStringProperty lastWorked;
+
+
+	public Employee() {
+		super();
+		position = new SimpleStringProperty();
+		lastWorked = new SimpleStringProperty();
 	}
+
+	/**
+	 * Employee constructor with additional properties for employee
+	 * @param firstName
+	 * @param lastName
+	 * @param email
+	 * @param position
+     * @param lastWorked
+     */
+	public Employee(String firstName, String lastName, String email, String position, String lastWorked) {
+		super(firstName, lastName, email);
+		this.position = new SimpleStringProperty(position);
+		this.lastWorked = new SimpleStringProperty(lastWorked);
+	}
+
+	//Setters and getters
+
 	public String getPosition() {
-		return position;
+		return position.get();
 	}
+
 	public void setPosition(String position) {
-		this.position = position;
+		this.position.set(position);
 	}
-	
-	
+
+	public String getLastWorked() {
+		return lastWorked.get();
+	}
+
+	public void setLastWorked(String lastWorked) {
+		this.lastWorked.set(lastWorked);
+	}
 }
