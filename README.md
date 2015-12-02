@@ -48,6 +48,6 @@ The software stack includes MySQL for DBMS, JDBC, JavaFX for User Inteface. The 
 ######Admin Function - Rating And FeedBack
 ![Admin Function - Rating and Feedback](/screenshots/Admin_RatingAndFeedback.png)
 
-
-
+######Admin Function - Customers
+![Admin Function - Customers](/screenshots/Admin_Customers.png)
 
