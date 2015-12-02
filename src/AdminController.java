@@ -1,3 +1,4 @@
+import Model.Employee;
 import Model.Rating;
 import Model.Reservation;
 import com.mysql.jdbc.Connection;
@@ -266,16 +267,80 @@ public class AdminController {
         //Clear old content
         contentPane.getChildren().clear();
 
-        //Set up drink menu details
-        ImageView drinkMenuDetails = new ImageView(new Image(getClass().getResourceAsStream("Graphics/DrinkMenuDetails.png")));
-        drinkMenuDetails.setFitWidth(774/1.5);
-        drinkMenuDetails.setFitHeight(648/1.5);
-        VBox box = new VBox();
-        box.getChildren().add(drinkMenuDetails);
-        box.setAlignment(Pos.TOP_CENTER);
+        titleLabel.setText("Employees");
 
-        contentPane.getChildren().add(box);
-        titleLabel.setText("Drink Model.Menu");
+        // 2 horizontal boxes for All Employees and Employees are Customers
+        HBox hbox = new HBox();
+        hbox.setSpacing(5);
+
+        //2 vboxes for each hbox
+        VBox leftBox = new VBox();
+        VBox rightBox = new VBox();
+
+
+        // Set up All employees
+        ObservableList<Employee> data = FXCollections.observableArrayList(operation.getAllEmployees());
+        TableView table = new TableView();
+
+
+        //Add title for all employees
+        Text leftTitle = new Text("All Employees");
+        leftTitle.setFont(new Font("System",24));
+
+        TableColumn fnCol = new TableColumn("First Name");
+        fnCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        TableColumn lnCol = new TableColumn("Last Name");
+        lnCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        TableColumn positionCol = new TableColumn("Position");
+        positionCol.setCellValueFactory(new PropertyValueFactory<>("position"));
+        TableColumn emailCol = new TableColumn("Email");
+        emailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
+        TableColumn lastworkedCol = new TableColumn("Last Worked");
+        lastworkedCol.setCellValueFactory(new PropertyValueFactory<>("lastWorked"));
+
+
+        table.getColumns().addAll(fnCol, lnCol, positionCol, emailCol, lastworkedCol);
+        table.setItems(data);
+
+        //add left table and title to left box
+        leftBox.getChildren().addAll(leftTitle, table);
+        leftBox.setSpacing(5);
+
+
+        // Set up for employees and also customers
+        ObservableList<Employee> rightData = FXCollections.observableArrayList(operation.getEmployeesWhoAreCustomers());
+        TableView rightTable = new TableView();
+
+
+        //Add title for all employees
+        Text rightTitle = new Text("Employees Are Customers");
+        rightTitle.setFont(new Font("System",24));
+
+        TableColumn RfnCol = new TableColumn("First Name");
+        RfnCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        TableColumn RlnCol = new TableColumn("Last Name");
+        RlnCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        TableColumn RpositionCol = new TableColumn("Position");
+        RpositionCol.setCellValueFactory(new PropertyValueFactory<>("position"));
+        TableColumn RemailCol = new TableColumn("Email");
+        RemailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
+        TableColumn RlastworkedCol = new TableColumn("Last Worked");
+        RlastworkedCol.setCellValueFactory(new PropertyValueFactory<>("lastWorked"));
+
+
+        rightTable.getColumns().addAll(RfnCol, RlnCol, RpositionCol, RemailCol, RlastworkedCol);
+        rightTable.setItems(rightData);
+
+        //add right table to the right box
+        rightBox.getChildren().addAll(rightTitle, rightTable);
+        rightBox.setSpacing(5);
+
+        hbox.getChildren().addAll(leftBox, rightBox);
+        hbox.setSpacing(10);
+        hbox.setAlignment(Pos.CENTER);
+
+        // add hbox to content pane
+        contentPane.getChildren().add(hbox);
     }
 
     @FXML

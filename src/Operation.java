@@ -125,7 +125,7 @@ public class Operation {
 				customer.setEmail(rs.getString("email"));
 				customer.setFirstName(rs.getString("firstName"));
 				customer.setLastName(rs.getString("lastName"));
-				customer.setID(rs.getInt("cid"));
+				customer.setId(rs.getInt("cid"));
 
 				if (statement != null) statement.close();
 
@@ -603,7 +603,7 @@ public class Operation {
 				Customer customer = new Customer();
 				customer.setFirstName(firstName);
 				customer.setLastName(lastName);
-				customer.setID(cid);
+				customer.setId(cid);
 				list.add(customer);
 			}
 
@@ -622,15 +622,53 @@ public class Operation {
 	}
 
 	/**
+	 * Get All Employees
+	 * @return a list of all employees
+     */
+	public ArrayList<Employee> getAllEmployees() {
+		String sql = "SELECT * FROM Employee";
+
+		try {
+			Statement statement = (Statement) connection.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+			ArrayList<Employee> list = new ArrayList<>();
+
+			while (rs.next()) {
+				int eid = rs.getInt("eid");
+				String fn = rs.getString("firstName");
+				String ln = rs.getString("lastName");
+				String position = rs.getString("position");
+				String email = rs.getString("email");
+				String lastworked = rs.getDate("lastworked").toString();
+
+				Employee em = new Employee(fn, ln, email, position, lastworked);
+//				em.setId(eid);
+
+				list.add(em);
+			}
+
+			if (statement != null) statement.close();
+
+			return  list;
+
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+			return null;
+		}
+	}
+
+	/**
 	 * Get a list of employees who are also customers
 	 * @return a list of employees
      */
 	public ArrayList<Employee> getEmployeesWhoAreCustomers() {
-		String sql = "SELECT * FROM Employee\n" +
-				"\tWHERE EXISTS (\n" +
-				"\t\tSELECT *\n" +
-				"\t\tFROM Customer\n" +
-				"\t\tWHERE Employee.firstName = Customer.firstName AND Employee.lastName = Customer.lastName)";
+		String sql = "select * from employee " +
+				"where exists(" +
+				"select * from customer " +
+				"where Employee.firstName = customer.firstname " +
+				"AND employee.lastname = customer.lastname)";
 
 		try {
 			Statement statement = (Statement) connection.createStatement();
@@ -646,6 +684,7 @@ public class Operation {
 				Date lastWorked = rs.getDate("lastWorked");
 
 				Employee em = new Employee(firstName, lastName, email, position, lastWorked.toString());
+//				em.setId(id);
 				list.add(em);
 			}
 

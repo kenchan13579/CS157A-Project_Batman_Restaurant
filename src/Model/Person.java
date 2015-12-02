@@ -4,7 +4,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Person {
-	private SimpleIntegerProperty ID;
+	private SimpleIntegerProperty id;
 	private SimpleStringProperty firstName;
 	private SimpleStringProperty lastName;
 	private SimpleStringProperty email;
@@ -14,7 +14,7 @@ public class Person {
 	 * Default constructor
 	 */
 	public Person() {
-		ID = new SimpleIntegerProperty(0);
+		id = new SimpleIntegerProperty(0);
 		firstName = new SimpleStringProperty("");
 		lastName = new SimpleStringProperty("");
 		email = new SimpleStringProperty("");
@@ -36,22 +36,23 @@ public class Person {
 
 	/**
 	 * Constructor with a given ID, likely for use with getting a person out of database
-	 * @param ID
+	 * @param id
      */
 
 
 	// Getters and setters
 
-	public Person(int ID) {
-		this.ID = new SimpleIntegerProperty(ID);
+	public Person(int id) {
+		this.id = new SimpleIntegerProperty(id);
 	}
 
-	public int getID() {
-		return ID.get();
+	public int getId() {
+		return id.get();
 	}
 
-	public void setID(int ID) {
-		this.ID.set(ID);
+	public void setId(int value) {
+		this.id.set(value);
+
 	}
 
 	public String getFirstName() {
