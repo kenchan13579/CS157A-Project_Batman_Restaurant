@@ -1,6 +1,4 @@
-import Model.Employee;
-import Model.Rating;
-import Model.Reservation;
+import Model.*;
 import com.mysql.jdbc.Connection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,6 +24,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by phucnguyen on 11/10/15.
@@ -246,17 +245,84 @@ public class AdminController {
         //Clear old content
         contentPane.getChildren().clear();
 
-        //Set up food menu details
-        ImageView foodMenuDetails = new ImageView(new Image(getClass().getResourceAsStream("Graphics/FoodMenuDetails.png")));
-        foodMenuDetails.setFitWidth(774/1.5);
-        foodMenuDetails.setFitHeight(934/1.5);
+        titleLabel.setText("Customer Information");
+
+        ScrollPane scrollPane = new ScrollPane();
+
+        contentPane.getChildren().add(scrollPane);
+
         VBox box = new VBox();
-        box.getChildren().add(foodMenuDetails);
+        box.setSpacing(10);
         box.setAlignment(Pos.TOP_CENTER);
+        box.setPrefWidth(900);
 
-        contentPane.getChildren().add(box);
-        titleLabel.setText("Food Model.Menu");
+        //set up for ALL CUSTOMERS
+        Text cHeader = new Text("All Customers");
+        cHeader.setFont(new Font("System", 24));
 
+        ObservableList<Customer> data = FXCollections.observableArrayList(operation.getAllCustomers());
+        TableView cTable = new TableView();
+
+        TableColumn cfnCol = new TableColumn("First Name");
+        cfnCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        TableColumn clnCol = new TableColumn("Last Name");
+        clnCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        TableColumn cEmailCol = new TableColumn("Email");
+        cEmailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
+        TableColumn cLastVisitedCol = new TableColumn("Last Visited");
+        cLastVisitedCol.setCellValueFactory(new PropertyValueFactory<>("lastVisited"));
+        TableColumn cDiscountCol = new TableColumn("Discount");
+        cDiscountCol.setCellValueFactory(new PropertyValueFactory<>("discount"));
+
+        cTable.getColumns().addAll(cfnCol, clnCol, cEmailCol, cLastVisitedCol, cDiscountCol);
+        cTable.setItems(data);
+
+        //Set up for Customers who do not tip
+        Text header2 = new Text("Customer who do not tip");
+        header2.setFont(new Font("System", 24));
+
+        ObservableList<Customer> data2 = FXCollections.observableArrayList(operation.getCustomersWhoDoNotTip());
+        TableView table2 = new TableView();
+
+        TableColumn cfnCol2 = new TableColumn("First Name");
+        cfnCol2.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        TableColumn clnCol2 = new TableColumn("Last Name");
+        clnCol2.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        TableColumn cEmailCol2 = new TableColumn("Email");
+        cEmailCol2.setCellValueFactory(new PropertyValueFactory<>("email"));
+        TableColumn cLastVisitedCol2 = new TableColumn("Last Visited");
+        cLastVisitedCol2.setCellValueFactory(new PropertyValueFactory<>("lastVisited"));
+        TableColumn cDiscountCol2 = new TableColumn("Discount");
+        cDiscountCol2.setCellValueFactory(new PropertyValueFactory<>("discount"));
+
+        table2.getColumns().addAll(cfnCol2, clnCol2, cEmailCol2, cLastVisitedCol2, cDiscountCol2);
+        table2.setItems(data2);
+
+
+        //Set up for customers who spends more than 100
+//        Text header3 = new Text("Customers who spends more than $100");
+//        header2.setFont(new Font("System", 24));
+//
+//        ObservableList<Customer> data3 = FXCollections.observableArrayList(operation.getCustomersWhoSpendsMoreThan100());
+//        TableView table3 = new TableView();
+//
+//        TableColumn cfnCol3 = new TableColumn("First Name");
+//        cfnCol3.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+//        TableColumn clnCol3 = new TableColumn("Last Name");
+//        clnCol3.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+//        TableColumn cEmailCol3 = new TableColumn("Email");
+//        cEmailCol3.setCellValueFactory(new PropertyValueFactory<>("email"));
+//        TableColumn cLastVisitedCol3 = new TableColumn("Last Visited");
+//        cLastVisitedCol3.setCellValueFactory(new PropertyValueFactory<>("lastVisited"));
+//        TableColumn cDiscountCol3 = new TableColumn("Discount");
+//        cDiscountCol3.setCellValueFactory(new PropertyValueFactory<>("discount"));
+//
+//        table3.getColumns().addAll(cfnCol3, clnCol3, cEmailCol3, cLastVisitedCol3, cDiscountCol3);
+//        table3.setItems(data3);
+
+
+        box.getChildren().addAll(cHeader, cTable, header2, table2);
+        scrollPane.setContent(box);
     }
 
     @FXML
@@ -287,25 +353,25 @@ public class AdminController {
         Text leftTitle = new Text("All Employees");
         leftTitle.setFont(new Font("System",24));
 
-        TableColumn fnCol = new TableColumn("First Name");
-        fnCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-        TableColumn lnCol = new TableColumn("Last Name");
-        lnCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-        TableColumn positionCol = new TableColumn("Position");
-        positionCol.setCellValueFactory(new PropertyValueFactory<>("position"));
-        TableColumn emailCol = new TableColumn("Email");
-        emailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
-        TableColumn lastworkedCol = new TableColumn("Last Worked");
-        lastworkedCol.setCellValueFactory(new PropertyValueFactory<>("lastWorked"));
 
-
-        table.getColumns().addAll(fnCol, lnCol, positionCol, emailCol, lastworkedCol);
-        table.setItems(data);
 
         //add left table and title to left box
         leftBox.getChildren().addAll(leftTitle, table);
         leftBox.setSpacing(5);
 
+        TableColumn efnCol = new TableColumn("First Name");
+        efnCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        TableColumn elnCol = new TableColumn("Last Name");
+        elnCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        TableColumn epositionCol = new TableColumn("Position");
+        epositionCol.setCellValueFactory(new PropertyValueFactory<>("position"));
+        TableColumn eemailCol = new TableColumn("Email");
+        eemailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
+        TableColumn elastworkedCol = new TableColumn("Last Worked");
+        elastworkedCol.setCellValueFactory(new PropertyValueFactory<>("lastWorked"));
+
+        table.getColumns().addAll(efnCol, elnCol, epositionCol, eemailCol, elastworkedCol);
+        table.setItems(data);
 
         // Set up for employees and also customers
         ObservableList<Employee> rightData = FXCollections.observableArrayList(operation.getEmployeesWhoAreCustomers());
@@ -360,7 +426,7 @@ public class AdminController {
         box.setAlignment(Pos.TOP_CENTER);
 
         contentPane.getChildren().add(box);
-        titleLabel.setText("Model.Receipt");
+        titleLabel.setText("Receipt");
 
     }
 
@@ -478,6 +544,49 @@ public class AdminController {
 
         // set up
         titleLabel.setText("Archives");
+
+        // Scroll pane
+        ScrollPane scrollPane = new ScrollPane();
+
+        // add scroll pane to the content pane
+        contentPane.getChildren().add(scrollPane);
+
+        // create vbox
+        VBox box = new VBox();
+        box.setSpacing(5);
+
+        //create archive table for Employees
+        Text eTitle = new Text("Archived Employees");
+        eTitle.setFont(new Font("System", 24));
+
+        if (operation.archive()) {
+            //Table for employees
+            ObservableList<Employee> edata = FXCollections.observableArrayList(operation.getArchivedEmployees());
+            TableView eTable = new TableView();
+
+            TableColumn efnCol = new TableColumn("First Name");
+            efnCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+            TableColumn elnCol = new TableColumn("Last Name");
+            elnCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+            TableColumn epositionCol = new TableColumn("Position");
+            epositionCol.setCellValueFactory(new PropertyValueFactory<>("position"));
+            TableColumn eemailCol = new TableColumn("Email");
+            eemailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
+            TableColumn elastworkedCol = new TableColumn("Last Worked");
+            elastworkedCol.setCellValueFactory(new PropertyValueFactory<>("lastWorked"));
+
+
+            eTable.getColumns().addAll(efnCol, elnCol, epositionCol, eemailCol, elastworkedCol);
+            eTable.setItems(edata);
+            box.getChildren().addAll(eTitle, eTable);
+
+            scrollPane.setContent(box);
+
+        } else {
+            titleLabel.setText("Can't Archive");
+            return;
+        }
+
     }
 
 }
