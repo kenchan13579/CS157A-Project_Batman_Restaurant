@@ -1,16 +1,20 @@
 package Model;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 public class Customer extends Person{
-	private String lastVisited;
-	private int discount;
+	private SimpleStringProperty lastVisited;
+	private SimpleIntegerProperty discount;
 
 	/**
 	 * Default constructor
 	 */
 	public Customer() {
 		super();
-		lastVisited = null;
-		discount = 0;
+		lastVisited = new SimpleStringProperty("");
+		discount = new SimpleIntegerProperty(0);
+
 	}
 
 	/**
@@ -24,24 +28,24 @@ public class Customer extends Person{
 
 	public Customer(String firstName, String lastName, String email, String lastVisited, int discount) {
 		super(firstName, lastName, email);
-		this.lastVisited = lastVisited;
-		this.discount = discount;
+		this.lastVisited = new SimpleStringProperty(lastVisited);
+		this.discount = new SimpleIntegerProperty(discount);
 	}
 
 	//Getters and setters
 	public String getLastVisited() {
-		return lastVisited;
+		return lastVisited.get();
 	}
 
 	public void setLastVisited(String lastVisited) {
-		this.lastVisited = lastVisited;
+		this.lastVisited.set(lastVisited);
 	}
 
 	public int getDiscount() {
-		return discount;
+		return discount.get();
 	}
 
 	public void setDiscount(int discount) {
-		this.discount = discount;
+		this.discount.set(discount);
 	}
 }

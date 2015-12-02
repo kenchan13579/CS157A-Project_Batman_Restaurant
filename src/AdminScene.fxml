@@ -18,7 +18,7 @@
    <children>
       <VBox alignment="CENTER" spacing="30.0" style="-fx-background-color: #30333A;" GridPane.rowIndex="1">
          <children>
-            <Button fx:id="reservationsButton" mnemonicParsing="false" prefHeight="73.0" prefWidth="39.0" />
+            <Button fx:id="reservationsButton" mnemonicParsing="false" onAction="#reservationsButtonClicked" prefHeight="73.0" prefWidth="39.0" />
             <Button fx:id="customersButton" mnemonicParsing="false" prefHeight="59.0" prefWidth="54.0" />
             <Button fx:id="employeesButton" mnemonicParsing="false" prefHeight="59.0" prefWidth="56.0" />
             <Button fx:id="receiptButton" mnemonicParsing="false" prefHeight="57.0" prefWidth="37.0" />

@@ -1,14 +1,16 @@
 package Model;
 
+import javafx.beans.property.SimpleStringProperty;
+
 public class Employee extends Person{
-	private String position;
-	private String lastWorked;
+	private SimpleStringProperty position;
+	private SimpleStringProperty lastWorked;
 
 
 	public Employee() {
 		super();
-		position = null;
-		lastWorked = null;
+		position = new SimpleStringProperty();
+		lastWorked = new SimpleStringProperty();
 	}
 
 	/**
@@ -21,25 +23,25 @@ public class Employee extends Person{
      */
 	public Employee(String firstName, String lastName, String email, String position, String lastWorked) {
 		super(firstName, lastName, email);
-		this.position = position;
-		this.lastWorked = lastWorked;
+		this.position = new SimpleStringProperty(position);
+		this.lastWorked = new SimpleStringProperty(lastWorked);
 	}
 
 	//Setters and getters
 
 	public String getPosition() {
-		return position;
+		return position.get();
 	}
 
 	public void setPosition(String position) {
-		this.position = position;
+		this.position.set(position);
 	}
 
 	public String getLastWorked() {
-		return lastWorked;
+		return lastWorked.get();
 	}
 
 	public void setLastWorked(String lastWorked) {
-		this.lastWorked = lastWorked;
+		this.lastWorked.set(lastWorked);
 	}
 }

@@ -1,54 +1,58 @@
 package Model;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+
 public class Table {
-    private int tID;
-    private int eID;
-    private int seats;
-    private boolean available;
+    private SimpleIntegerProperty tID;
+    private SimpleIntegerProperty eID;
+    private SimpleIntegerProperty seats;
+    private SimpleBooleanProperty available;
 
     public Table() {
-        tID = 0;
-        eID = 0;
-        seats = 0;
-        available = false;
+        tID = new SimpleIntegerProperty(0);
+        eID = new SimpleIntegerProperty(0);
+        seats = new SimpleIntegerProperty(0);
+        available = new SimpleBooleanProperty(false);
+
     }
 
     public Table(int tID, int eID, int seats, boolean available) {
-        this.tID = tID;
-        this.eID = eID;
-        this.seats = seats;
-        this.available = available;
+        this.tID = new SimpleIntegerProperty(tID);
+        this.eID = new SimpleIntegerProperty(eID);
+        this.seats = new SimpleIntegerProperty(seats);
+        this.available = new SimpleBooleanProperty(available);
     }
 
-    public int gettID() {
-        return tID;
+    public int getTID() {
+        return tID.get();
     }
 
-    public void settID(int tID) {
-        this.tID = tID;
+    public void setTID(int tID) {
+        this.tID.set(tID);
     }
 
-    public int geteID() {
-        return eID;
+    public int getEID() {
+        return eID.get();
     }
 
-    public void seteID(int eID) {
-        this.eID = eID;
+    public void setEID(int eID) {
+        this.eID.set(eID);
     }
 
     public int getSeats() {
-        return seats;
+        return seats.get();
     }
 
     public void setSeats(int seats) {
-        this.seats = seats;
+        this.seats.set(seats);
     }
 
     public boolean isAvailable() {
-        return available;
+        return available.get();
     }
 
     public void setAvailable(boolean available) {
-        this.available = available;
+        this.available.set(available);
     }
 }

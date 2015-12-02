@@ -1,73 +1,77 @@
 package Model;
 
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 public class Receipt {
 
-    private int rID;
-    private int eID;
-    private int cID;
-    private double subtotal;
-    private double gratuity;
-    private String billDate;
+    private SimpleIntegerProperty rID;
+    private SimpleIntegerProperty eID;
+    private SimpleIntegerProperty cID;
+    private SimpleDoubleProperty subtotal;
+    private SimpleDoubleProperty gratuity;
+    private SimpleStringProperty billDate;
 
 
     public Receipt(int rID, int eID, int cID, double subtotal, double gratuity, String billDate) {
-        this.rID = rID;
-        this.eID = eID;
-        this.cID = cID;
-        this.subtotal = subtotal;
-        this.gratuity = gratuity;
-        this.billDate = billDate;
+        this.rID = new SimpleIntegerProperty(rID);
+        this.eID = new SimpleIntegerProperty(eID);
+        this.cID = new SimpleIntegerProperty(cID);
+        this.subtotal = new SimpleDoubleProperty(subtotal);
+        this.gratuity = new SimpleDoubleProperty(gratuity);
+        this.billDate = new SimpleStringProperty(billDate);
     }
 
     public Receipt(int rID) {
-        this.rID = rID;
+        this.rID = new SimpleIntegerProperty(rID);
     }
 
-    public int getrID() {
-        return rID;
+    public int getRID() {
+        return rID.get();
     }
 
-    public void setrID(int rID) {
-        this.rID = rID;
+    public void setRID(int rID) {
+        this.rID.set(rID);
     }
 
-    public int geteID() {
-        return eID;
+    public int getEID() {
+        return eID.get();
     }
 
-    public void seteID(int eID) {
-        this.eID = eID;
+    public void setEID(int eID) {
+        this.eID.set(eID);
     }
 
-    public int getcID() {
-        return cID;
+    public int getCID() {
+        return cID.get();
     }
 
-    public void setcID(int cID) {
-        this.cID = cID;
+    public void setCID(int cID) {
+        this.cID.set(cID);
     }
 
     public double getSubtotal() {
-        return subtotal;
+        return subtotal.get();
     }
 
     public void setSubtotal(double subtotal) {
-        this.subtotal = subtotal;
+        this.subtotal.set(subtotal);
     }
 
     public double getGratuity() {
-        return gratuity;
+        return gratuity.get();
     }
 
     public void setGratuity(double gratuity) {
-        this.gratuity = gratuity;
+        this.gratuity.set(gratuity);
     }
 
     public String getBillDate() {
-        return billDate;
+        return billDate.get();
     }
 
     public void setBillDate(String billDate) {
-        this.billDate = billDate;
+        this.billDate.set(billDate);
     }
 }

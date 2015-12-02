@@ -1,55 +1,58 @@
 package Model;
 
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+
 /**
  * Created by phucnguyen on 11/24/15.
  */
 public class ReceiptItem {
-    private int rID;
-    private int mID;
-    private int quantity;
-    private double price;
+    private SimpleIntegerProperty rID;
+    private SimpleIntegerProperty mID;
+    private SimpleIntegerProperty quantity;
+    private SimpleDoubleProperty price;
 
     public ReceiptItem(int rID) {
-        this.rID = rID;
+        this.rID = new SimpleIntegerProperty(rID);
     }
 
     public ReceiptItem(int rID, int mID, int quantity, double price) {
-        this.rID = rID;
-        this.mID = mID;
-        this.quantity = quantity;
-        this.price = price;
+        this.rID = new SimpleIntegerProperty(rID);
+        this.mID = new SimpleIntegerProperty(mID);
+        this.quantity = new SimpleIntegerProperty(quantity);
+        this.price = new SimpleDoubleProperty(price);
     }
 
 
-    public int getrID() {
-        return rID;
+    public int getRID() {
+        return rID.get();
     }
 
-    public void setrID(int rID) {
-        this.rID = rID;
+    public void setRID(int rID) {
+        this.rID.set(rID);
     }
 
-    public int getmID() {
-        return mID;
+    public int getMID() {
+        return mID.get();
     }
 
-    public void setmID(int mID) {
-        this.mID = mID;
+    public void setMID(int mID) {
+        this.mID.set(mID);
     }
 
     public int getQuantity() {
-        return quantity;
+        return quantity.get();
     }
 
     public void setQuantity(int quantity) {
-        this.quantity = quantity;
+        this.quantity.set(quantity);
     }
 
     public double getPrice() {
-        return price;
+        return price.get();
     }
 
     public void setPrice(double price) {
-        this.price = price;
+        this.price.set(price);
     }
 }

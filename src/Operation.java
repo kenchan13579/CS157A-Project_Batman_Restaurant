@@ -512,6 +512,38 @@ public class Operation {
 		}
 	}
 
+	/**
+	 * Get all reservations
+	 * @return a list of reservations
+     */
+	public ArrayList<Reservation> getAllReservations() {
+		String sql = "SELECT * FROM Reservation";
+
+		try {
+			Statement statement = (Statement) connection.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+			ArrayList<Reservation> list = new ArrayList<>();
+
+			while (rs.next()) {
+				int tid = rs.getInt("tID");
+				int cid = rs.getInt("cID");
+				int partySize = rs.getInt("partySize");
+				String date = rs.getDate("reservationDate").toString();
+
+				Reservation reservation = new Reservation(tid, cid, partySize, date);
+				list.add(reservation);
+			}
+
+			if (statement != null) statement.close();
+
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+			return null;
+		}
+	}
+
 
 	/**
 	 * Get subtotal price of a meal

@@ -1,3 +1,7 @@
+import Model.Reservation;
+import com.mysql.jdbc.Connection;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -7,20 +11,26 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by phucnguyen on 11/10/15.
  */
 public class AdminController {
+
+    private Connection connection = ConnectionFactory.getMYSQLConnection();
+    private Operation operation = new Operation(connection);
 
     @FXML
     private Label titleLabel;
@@ -172,84 +182,45 @@ public class AdminController {
         stage.show();
     }
 
-//    @FXML
-//    private void reserveButtonClicked(ActionEvent event) {
-//        configureButtons();
-//        reservationsButton.setGraphic(reservationsSelectedIMV);
-//
-//        //Clear the content of contentPane
-//        contentPane.getChildren().clear();
-//
-//        //Set title
-//        titleLabel.setText("Make A Reservation");
-//
-//        // 2 vboxes and 1 hbox
-//        HBox hbox1 = new HBox();
-//        HBox hbox2 = new HBox();
-//        HBox hbox3 = new HBox();
-//        HBox hbox4 = new HBox();
-//
-//        //3 labels for table, date, party size
-//        Label tableLabel = new Label("Model.Table:");
-//        Label dateLabel = new Label("Date:");
-//        Label partySizeLabel =  new Label("Party Size: ");
-//
-//        //set font for 3 labels
-//        tableLabel.setFont(new Font("System", 24));
-//        dateLabel.setFont(new Font("System", 24));
-//        partySizeLabel.setFont(new Font("System", 24));
-//
-//
-//
-//
-//        //3 textfields for data
-//        TextField tableTextField = new TextField();
-//        tableTextField.setPromptText("0-14");
-//        TextField dateTextField = new TextField();
-//        dateTextField.setPromptText("YYYY-MM-DD");
-//        TextField partySizeTextField = new TextField();
-//        partySizeTextField.setPromptText("0-10");
-//
-//
-//
-//        hbox1.getChildren().addAll(tableLabel, tableTextField);
-//        hbox1.setAlignment(Pos.CENTER);
-//        hbox1.setSpacing(75);
-//
-//        hbox2.getChildren().addAll(dateLabel, dateTextField);
-//        hbox2.setAlignment(Pos.CENTER);
-//        hbox2.setSpacing(85);
-//
-//        hbox3.getChildren().addAll(partySizeLabel, partySizeTextField);
-//        hbox3.setAlignment(Pos.CENTER);
-//        hbox3.setSpacing(20);
-//
-//
-//        //Confirm button
-//        Button confirmButton = new Button("Confirm");
-//        confirmButton.setStyle("-fx-background-color: #e63347;" +
-//                "-fx-background-radius: 7;" +
-//                "-fx-text-fill: white");
-//        confirmButton.setPrefSize(130, 40);
-//        confirmButton.setOnAction(e-> {
-//            contentPane.getChildren().clear();
-//            titleLabel.setText("Your table has been reserved!");
-//        });
-//
-//        hbox4.getChildren().add(confirmButton);
-//        hbox4.setAlignment(Pos.CENTER);
-//        hbox4.setPadding(new Insets(50, 0, 0, 0));
-//        hbox4.setSpacing(15);
-//
-//        VBox box = new VBox();
-//        box.setSpacing(20);
-//        box.setPadding(new Insets(30, 0, 0, 0));
-//        box.setAlignment(Pos.TOP_CENTER);
-//        box.getChildren().addAll(hbox1, hbox2, hbox3, hbox4);
-//
-//        //add all to contentpane
-//        contentPane.getChildren().add(box);
-//    }
+    @FXML
+    private void reservationsButtonClicked(ActionEvent event) {
+        configureButtons();
+        reservationsButton.setGraphic(reservationsSelectedIMV);
+
+        //Clear the content of contentPane
+        contentPane.getChildren().clear();
+
+        //Set title
+        titleLabel.setText("All Reservations");
+
+
+
+        //Table view set up
+        TableView table = new TableView();
+        TableColumn tidCol = new TableColumn("tID");
+        tidCol.setCellValueFactory(new PropertyValueFactory<>("tID"));
+        TableColumn cidCol = new TableColumn("cID");
+        cidCol.setCellValueFactory(new PropertyValueFactory<>("cID"));
+        TableColumn partySizeCol = new TableColumn("Party Size");
+        partySizeCol.setCellValueFactory(new PropertyValueFactory<>("partySize"));
+        TableColumn dateCol = new TableColumn("Reservation Date");
+        dateCol.setCellValueFactory(new PropertyValueFactory<>("reservationDate"));
+
+        //set width for all cols
+        tidCol.setMinWidth(100);
+        cidCol.setMinWidth(100);
+        partySizeCol.setMinWidth(100);
+        dateCol.setMinWidth(300);
+
+
+        table.getColumns().addAll(tidCol, cidCol, partySizeCol, dateCol);
+        //Populate data to the table view
+        ObservableList<Reservation> data = FXCollections.observableArrayList(operation.getAllReservations());
+        table.setItems(data);
+
+        //add table view to content pane
+        contentPane.getChildren().add(table);
+    }
 //
 //    @FXML
 //    private void foodMenuButtonClicked(ActionEvent event) {
