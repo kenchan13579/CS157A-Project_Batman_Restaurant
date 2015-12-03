@@ -587,10 +587,10 @@ public class Operation {
 	 * @return a list of customers with id, first name, last name
      */
 	public ArrayList<Customer> getCustomersWhoSpendsMoreThan100() {
-		String sql = "SELECT cid, firstName, lastName\n" +
-				"\tFROM CUSTOMER JOIN RECEIPT\n" +
-				"\tGROUP BY cID\n" +
-				"\tHAVING SUBTOTAL > 100";
+		String sql = "SELECT * FROM Customer " +
+				"NATURAL JOIN Receipt " +
+				"GROUP BY cID " +
+				"HAVING avg(subtotal)> 100;";
 
 		try {
 			Statement statement = (Statement) connection.createStatement();

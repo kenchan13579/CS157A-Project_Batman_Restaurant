@@ -300,28 +300,28 @@ public class AdminController {
 
 
         //Set up for customers who spends more than 100
-//        Text header3 = new Text("Customers who spends more than $100");
-//        header2.setFont(new Font("System", 24));
-//
-//        ObservableList<Customer> data3 = FXCollections.observableArrayList(operation.getCustomersWhoSpendsMoreThan100());
-//        TableView table3 = new TableView();
-//
-//        TableColumn cfnCol3 = new TableColumn("First Name");
-//        cfnCol3.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-//        TableColumn clnCol3 = new TableColumn("Last Name");
-//        clnCol3.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-//        TableColumn cEmailCol3 = new TableColumn("Email");
-//        cEmailCol3.setCellValueFactory(new PropertyValueFactory<>("email"));
-//        TableColumn cLastVisitedCol3 = new TableColumn("Last Visited");
-//        cLastVisitedCol3.setCellValueFactory(new PropertyValueFactory<>("lastVisited"));
-//        TableColumn cDiscountCol3 = new TableColumn("Discount");
-//        cDiscountCol3.setCellValueFactory(new PropertyValueFactory<>("discount"));
-//
-//        table3.getColumns().addAll(cfnCol3, clnCol3, cEmailCol3, cLastVisitedCol3, cDiscountCol3);
-//        table3.setItems(data3);
+        Text header3 = new Text("Customers who spends more than $100");
+        header3.setFont(new Font("System", 24));
+
+        ObservableList<Customer> data3 = FXCollections.observableArrayList(operation.getCustomersWhoSpendsMoreThan100());
+        TableView table3 = new TableView();
+
+        TableColumn cfnCol3 = new TableColumn("First Name");
+        cfnCol3.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        TableColumn clnCol3 = new TableColumn("Last Name");
+        clnCol3.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        TableColumn cEmailCol3 = new TableColumn("Email");
+        cEmailCol3.setCellValueFactory(new PropertyValueFactory<>("email"));
+        TableColumn cLastVisitedCol3 = new TableColumn("Last Visited");
+        cLastVisitedCol3.setCellValueFactory(new PropertyValueFactory<>("lastVisited"));
+        TableColumn cDiscountCol3 = new TableColumn("Discount");
+        cDiscountCol3.setCellValueFactory(new PropertyValueFactory<>("discount"));
+
+        table3.getColumns().addAll(cfnCol3, clnCol3, cEmailCol3, cLastVisitedCol3, cDiscountCol3);
+        table3.setItems(data3);
 
 
-        box.getChildren().addAll(cHeader, cTable, header2, table2);
+        box.getChildren().addAll(cHeader, cTable, header2, table2, header3, table3);
         scrollPane.setContent(box);
     }
 
