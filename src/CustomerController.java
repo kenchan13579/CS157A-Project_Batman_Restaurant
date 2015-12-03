@@ -301,7 +301,6 @@ public class CustomerController {
             if (tableTextField.getText() != null && dateTextField.getText() != null
                     && partySizeTextField.getText() != null && firstnameTextField.getText() != null && lastnameTextField.getText() != null
                     && emailTextField.getText() != null) {
-
                 //Get all the data from text fields
                 int tableID = Integer.parseInt(tableTextField.getText().trim());
                 int partySize = Integer.parseInt(partySizeTextField.getText().trim());
@@ -316,9 +315,16 @@ public class CustomerController {
                 customer.setLastName(lastname);
                 customer.setEmail(email);
 
-                operation.reserveTable(partySize, date, tableID, customer);
+                boolean success = operation.reserveTable(partySize, date, tableID, customer);
                 contentPane.getChildren().clear();
-                titleLabel.setText("Your table has been reserved!");
+                if (success) {
+                    titleLabel.setText("Your table has been reserved!");
+                } else {
+                    titleLabel.setText("Error! Can't reserve a table");
+                }
+
+            } else {
+                titleLabel.setText("Empty Fields. Please Enter Info");
             }
 
         });
@@ -474,16 +480,21 @@ public class CustomerController {
                 int partySize = Integer.parseInt(partySizeTextField.getText().trim());
                 Date date = Date.valueOf(dateTextField.getText().trim());
 
+                boolean success = false;
                 try {
-                    operation.changeReservation(email, date, partySize);
+                    success = operation.changeReservation(email, date, partySize);
                 } catch (SQLException e1) {
                     e1.printStackTrace();
                     titleLabel.setText("Something wrong!");
                 }
 
-                //Success? do this
+
                 contentPane.getChildren().clear();
-                titleLabel.setText("Your reservation has been updated!");
+                if (success) {
+                    titleLabel.setText("Your reservation has been updated!");
+                } else {
+                    titleLabel.setText("Something's wrong!");
+                }
             } else {
                 titleLabel.setText("Information missing. Do it again!");
             }
@@ -674,8 +685,9 @@ public class CustomerController {
                 customer.setFirstName("Jon");
                 customer.setLastName("Nguyen");
                 customer.setEmail("jon@abc.com");
+                boolean success = false;
                 try {
-                    operation.rate(stars, feedback, customer);
+                    success = operation.rate(stars, feedback, customer);
                 } catch (SQLException e1) {
                     e1.printStackTrace();
                     contentPane.getChildren().clear();
@@ -684,7 +696,13 @@ public class CustomerController {
 
 
                 contentPane.getChildren().clear();
-                titleLabel.setText("Feedback Received!");
+
+                if (success) {
+                    titleLabel.setText("Feedback Received");
+
+                } else {
+                    titleLabel.setText("Can't Rate. Error!");
+                }
                 return;
             }
             contentPane.getChildren().clear();
