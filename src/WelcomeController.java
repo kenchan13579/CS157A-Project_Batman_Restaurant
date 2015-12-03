@@ -129,7 +129,36 @@ public class WelcomeController {
 
             adminSelected = !adminSelected;
 
+         // set up sign in or sign up interface for customer
 
+            //Set up labels
+            Label passwordLabel = new Label("Password");
+            passwordLabel.setFont(new Font("System", 20));
+            Label emailLabel = new Label("Email");
+            emailLabel.setFont(new Font("System", 20));
+
+            vboxForLabels.getChildren().clear();
+            vboxForLabels.getChildren().addAll(emailLabel, passwordLabel);
+
+            //set up text fields
+            vboxForTextfields.getChildren().clear();
+            emailTextField = new TextField();
+            emailTextField.setPromptText("Email");
+            passwordField = new PasswordField();
+            passwordField.setPromptText("Password");
+
+            vboxForTextfields.getChildren().addAll(emailTextField, passwordField);
+
+            //set up error labels
+            vboxForErrorLabels.getChildren().clear();
+            emailErrorLabel = new Label();
+            emailErrorLabel.setTextFill(Paint.valueOf("#f5515f"));
+
+            passwordErrorLabel = new Label();
+            fnErrorLabel.setTextFill(Paint.valueOf("#f5515f"));
+
+            vboxForErrorLabels.setSpacing(63);
+            vboxForErrorLabels.getChildren().addAll(emailErrorLabel, passwordErrorLabel);
         }
 
     }
@@ -152,8 +181,6 @@ public class WelcomeController {
 
             if (email.length() > 0 && password.length() > 0) {
                 emailErrorLabel.setText("");
-                fnErrorLabel.setText("");
-                lnErrorLabel.setText("");
                 passwordErrorLabel.setText("");
 
 
@@ -162,6 +189,7 @@ public class WelcomeController {
                     return;
                 } else {
                     emailErrorLabel.setText("Please use 'admin' for email and pass");
+                    emailErrorLabel.setVisible(true);
                 }
             }
 
