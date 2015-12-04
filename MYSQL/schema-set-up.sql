@@ -82,7 +82,7 @@ FOR EACH ROW
 BEGIN
 	IF (new.stars=5)
 	THEN UPDATE Customer Set discount=10 WHERE cID=new.cID;
-    END IF;
+	END IF;
 END $$
 DELIMITER ;
 
