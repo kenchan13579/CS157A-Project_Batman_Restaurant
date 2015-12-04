@@ -523,21 +523,24 @@ public class Operation {
 	 * Get all reservations
 	 * @return a list of reservations
      */
-	public ArrayList<Reservation> getAllReservations() {
-		String sql = "SELECT * FROM Reservation";
+	public ArrayList<ReservationInfo> getAllReservations() {
+		String sql = "SELECT firstName, lastName, tID, partysize, seats, reservationDate\n" +
+				"FROM Reservation NATURAL JOIN Customer NATURAL JOIN aTable";
 
 		try {
 			Statement statement = (Statement) connection.createStatement();
 			ResultSet rs = statement.executeQuery(sql);
-			ArrayList<Reservation> list = new ArrayList<>();
+			ArrayList<ReservationInfo> list = new ArrayList<>();
 
 			while (rs.next()) {
+				String firstName = rs.getString("firstName");
+				String lastName = rs.getString("lastName");
 				int tid = rs.getInt("tID");
-				int cid = rs.getInt("cID");
 				int partySize = rs.getInt("partySize");
+				int seats = rs.getInt("seats");
 				String date = rs.getDate("reservationDate").toString();
 
-				Reservation reservation = new Reservation(tid, cid, partySize, date);
+				ReservationInfo reservation = new ReservationInfo(tid, firstName, lastName, partySize, seats, date);
 				list.add(reservation);
 			}
 

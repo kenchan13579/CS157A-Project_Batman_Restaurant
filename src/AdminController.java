@@ -233,25 +233,31 @@ public class AdminController {
 
         //Table view set up
         TableView table = new TableView();
+        TableColumn firstNameCol = new TableColumn("First Name");
+        firstNameCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        TableColumn lastNameCol = new TableColumn("Last Name");
+        lastNameCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
         TableColumn tidCol = new TableColumn("tID");
         tidCol.setCellValueFactory(new PropertyValueFactory<>("tID"));
-        TableColumn cidCol = new TableColumn("cID");
-        cidCol.setCellValueFactory(new PropertyValueFactory<>("cID"));
         TableColumn partySizeCol = new TableColumn("Party Size");
         partySizeCol.setCellValueFactory(new PropertyValueFactory<>("partySize"));
+        TableColumn seatsCol = new TableColumn("Seats");
+        seatsCol.setCellValueFactory(new PropertyValueFactory<>("seats"));
         TableColumn dateCol = new TableColumn("Reservation Date");
         dateCol.setCellValueFactory(new PropertyValueFactory<>("reservationDate"));
 
         //set width for all cols
+        firstNameCol.setMinWidth(100);
+        lastNameCol.setMinWidth(100);
         tidCol.setMinWidth(100);
-        cidCol.setMinWidth(100);
         partySizeCol.setMinWidth(100);
+        seatsCol.setMinWidth(100);
         dateCol.setMinWidth(300);
 
 
-        table.getColumns().addAll(tidCol, cidCol, partySizeCol, dateCol);
+        table.getColumns().addAll(firstNameCol, lastNameCol, tidCol, partySizeCol, seatsCol, dateCol);
         //Populate data to the table view
-        ObservableList<Reservation> data = FXCollections.observableArrayList(operation.getAllReservations());
+        ObservableList<ReservationInfo> data = FXCollections.observableArrayList(operation.getAllReservations());
         table.setItems(data);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
