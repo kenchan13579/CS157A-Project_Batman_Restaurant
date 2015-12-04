@@ -883,7 +883,40 @@ public class Operation {
 		}
 	}
 
+	/**
+	 * Get tables that are available for a customer to reserve
+	 * @param date the requested reservation date
+     * @return a list of available tables
+     */
+	public ArrayList<Table> checkAvailability(String date) {
+		String sql = "SELECT * FROM aTable WHERE NOT EXISTS (SELECT * FROM Reservation " +
+				"WHERE reservationDate=? AND aTable.tID=Reservation.tID)";
+		try {
+			PreparedStatement statement = (PreparedStatement) connection.prepareStatement(sql);
+			statement.setString(1, date);
+			ResultSet rs = statement.executeQuery();
+			ArrayList<Table> list = new ArrayList<>();
+			while (rs.next()) {
+				int tid = rs.getInt("tid");
+				int eid = rs.getInt("eid");
+				int seats = rs.getInt("seats");
+				boolean available = rs.getBoolean("available");
 
+				Table table = new Table(tid, eid, seats, available);
+//				customer.setId(id);
+				list.add(table);
+			}
+
+			if (statement != null) statement.close();
+
+			return list;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+			return null;
+		}
+	}
 
 
 }
