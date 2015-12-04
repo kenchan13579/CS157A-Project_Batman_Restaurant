@@ -918,5 +918,36 @@ public class Operation {
 		}
 	}
 
+	/**
+	 * Get the number of tables available for the week
+	 * @return 0th array of dates, 1st array of number of tables available
+     */
+	public ArrayList<Availability> getWeeklyAvailability() {
+		String sql = "SELECT reservationDate, (SELECT count(*) FROM aTable) - count(*) as tablesAvailable\n" +
+				"FROM Reservation\n" +
+				"WHERE reservationDate - CURDATE() < 8\n" +
+				"GROUP BY reservationDate";
+		try {
+			Statement statement = (Statement) connection.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+			ArrayList<Availability> list = new ArrayList<Availability>();
+			int i = 0;
+			while (rs.next()) {
+				String date = rs.getDate("reservationDate").toString();
+				int tablesAvailable = rs.getInt("tablesAvailable");
 
+				Availability day = new Availability(tablesAvailable, date);
+				list.add(day);
+			}
+
+			if (statement != null) statement.close();
+
+			return list;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+			return null;
+		}
+	}
 }
