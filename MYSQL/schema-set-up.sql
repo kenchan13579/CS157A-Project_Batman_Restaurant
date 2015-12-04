@@ -85,7 +85,7 @@ DROP TRIGGER IF EXISTS visiting;
 CREATE TRIGGER visiting
 AFTER INSERT ON Reservation
 FOR EACH ROW 
-UPDATE Customer Set lastVisited = now() WHERE cID=NEW.cID;
+UPDATE Customer Set udpatedAt = now() WHERE cID=NEW.cID;
 
 
 /* Procdedure */
