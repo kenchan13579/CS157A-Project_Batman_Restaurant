@@ -99,9 +99,11 @@ UPDATE Customer Set updatedAt = now() WHERE cID=NEW.cID;
 /* Archive customers */
 DROP PROCEDURE IF EXISTS archiveCustomers;
 DELIMITER $$
-CREATE PROCEDURE archiveCustomers (IN oldDate DATE)
+CREATE PROCEDURE archiveCustomers(IN oldDate DATE)
 BEGIN
-	INSERT INTO arc_Customer  ( SELECT * FROM Customer WHERE DATE(updatedAt)<oldDate);
-	DELETE FROM Customer WHERE DATE(updatedAt)<oldDate;
+	START TRANSACTION;
+    INSERT INTO arc_Customer(SELECT * FROM Customer WHERE updatedAt<oldDate);
+    DELETE FROM Customer WHERE updatedAt<oldDate;
+    COMMIT;
 END $$
 DELIMITER ;
