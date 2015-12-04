@@ -144,6 +144,6 @@ DELIMITER $$
 CREATE PROCEDURE archiveReceipts (IN oldDate DATE)
 BEGIN
 	INSERT INTO arc_Receipt  ( SELECT rID, eID, cID, subtotal, gratuity, billDate FROM Receipt WHERE updatedAt<oldDate);
-	DELETE FROM Receipt WHERE billDate<oldDate;
+	DELETE FROM Receipt WHERE updatedAt<oldDate;
 END $$
 DELIMITER ;
