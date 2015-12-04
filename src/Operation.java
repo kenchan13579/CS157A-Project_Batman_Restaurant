@@ -920,7 +920,7 @@ public class Operation {
 
 	/**
 	 * Get the number of tables available for the week
-	 * @return 0th array of dates, 1st array of number of tables available
+	 * @return ArrayList of availability, which is date and number of tables available
      */
 	public ArrayList<Availability> getWeeklyAvailability() {
 		String sql = "SELECT reservationDate, (SELECT count(*) FROM aTable) - count(*) as tablesAvailable\n" +
