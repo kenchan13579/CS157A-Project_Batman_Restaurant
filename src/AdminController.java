@@ -93,13 +93,12 @@ public class AdminController {
         lnCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
         TableColumn emailCol = new TableColumn("email");
         emailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
-        emailCol.setPrefWidth(450);
 
         table.getColumns().addAll(fnCol, lnCol, emailCol);
 
         ObservableList<Person> data = FXCollections.observableArrayList(operation.getAllCustomersAndEmployees());
         table.setItems(data);
-
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         contentPane.getChildren().add(table);
     }
 
@@ -252,6 +251,7 @@ public class AdminController {
         //Populate data to the table view
         ObservableList<Reservation> data = FXCollections.observableArrayList(operation.getAllReservations());
         table.setItems(data);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         //add table view to content pane
         contentPane.getChildren().add(table);
@@ -296,6 +296,7 @@ public class AdminController {
 
         cTable.getColumns().addAll(cfnCol, clnCol, cEmailCol, cLastVisitedCol, cDiscountCol);
         cTable.setItems(data);
+        cTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         //Set up for Customers who do not tip
         Text header2 = new Text("Customer who do not tip");
@@ -317,7 +318,7 @@ public class AdminController {
 
         table2.getColumns().addAll(cfnCol2, clnCol2, cEmailCol2, cLastVisitedCol2, cDiscountCol2);
         table2.setItems(data2);
-
+        table2.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         //Set up for customers who spends more than 100
         Text header3 = new Text("Customers who spends more than $100");
@@ -339,7 +340,7 @@ public class AdminController {
 
         table3.getColumns().addAll(cfnCol3, clnCol3, cEmailCol3, cLastVisitedCol3, cDiscountCol3);
         table3.setItems(data3);
-
+        table3.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         box.getChildren().addAll(cHeader, cTable, header2, table2, header3, table3);
         scrollPane.setContent(box);
@@ -392,6 +393,7 @@ public class AdminController {
 
         table.getColumns().addAll(efnCol, elnCol, epositionCol, eemailCol, elastworkedCol);
         table.setItems(data);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         // Set up for employees and also customers
         ObservableList<Employee> rightData = FXCollections.observableArrayList(operation.getEmployeesWhoAreCustomers());
@@ -598,6 +600,7 @@ public class AdminController {
 
             eTable.getColumns().addAll(efnCol, elnCol, epositionCol, eemailCol, elastworkedCol);
             eTable.setItems(edata);
+            eTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
             box.getChildren().addAll(eTitle, eTable);
 
             scrollPane.setContent(box);
