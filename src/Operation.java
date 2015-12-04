@@ -752,10 +752,10 @@ public class Operation {
 				String fn = rs.getString("firstName");
 				String ln = rs.getString("lastName");
 				String email = rs.getString("email");
-				String updated = rs.getString("updatedAt");
+				String time = rs.getString("updatedAt");
 				String updatedAt = "null";
-				if (updated != null)
-					updatedAt = updated.toString();
+				if (time != null)
+					updatedAt = time.toString();
 				int discount = rs.getInt("discount");
 
 				Customer customer = new Customer(fn, ln, email, updatedAt, discount);
@@ -858,7 +858,10 @@ public class Operation {
 				String firstname = rs.getString("firstName");
 				String lastname = rs.getString("lastName");
 				String email = rs.getString("email");
-				String updatedAt = rs.getDate("updatedAt").toString();
+				Timestamp time = rs.getTimestamp("updatedAt");
+				String updatedAt = "null";
+				if (time != null)
+					updatedAt = time.toString();
 				int discount = rs.getInt("discount");
 
 				Customer customer = new Customer(firstname, lastname, email, updatedAt, discount);
