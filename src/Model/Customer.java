@@ -4,7 +4,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Customer extends Person{
-	private SimpleStringProperty lastVisited;
+	private SimpleStringProperty updatedAt;
 	private SimpleIntegerProperty discount;
 
 	/**
@@ -12,7 +12,7 @@ public class Customer extends Person{
 	 */
 	public Customer() {
 		super();
-		lastVisited = new SimpleStringProperty("");
+		updatedAt = new SimpleStringProperty("");
 		discount = new SimpleIntegerProperty(0);
 
 	}
@@ -22,23 +22,23 @@ public class Customer extends Person{
 	 * @param firstName
 	 * @param lastName
 	 * @param email
-	 * @param lastVisited
+	 * @param updatedAt
      * @param discount
      */
 
-	public Customer(String firstName, String lastName, String email, String lastVisited, int discount) {
+	public Customer(String firstName, String lastName, String email, String updatedAt, int discount) {
 		super(firstName, lastName, email);
-		this.lastVisited = new SimpleStringProperty(lastVisited);
+		this.updatedAt = new SimpleStringProperty(updatedAt);
 		this.discount = new SimpleIntegerProperty(discount);
 	}
 
 	//Getters and setters
-	public String getLastVisited() {
-		return lastVisited.get();
+	public String getUpdatedAt() {
+		return updatedAt.get();
 	}
 
-	public void setLastVisited(String lastVisited) {
-		this.lastVisited.set(lastVisited);
+	public void setUpdatedAt(String updatedAt) {
+		this.updatedAt.set(updatedAt);
 	}
 
 	public int getDiscount() {

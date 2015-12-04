@@ -5,8 +5,10 @@ import com.mysql.jdbc.Statement;
 
 import java.sql.Array;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -626,10 +628,10 @@ public class Operation {
 	 * @return a list of all people
      */
 	public ArrayList<Person> getAllCustomersAndEmployees() {
-		String sql = "SELECT firstname, lastname, email, lastVisited, discount, lastWorked\n" +
+		String sql = "SELECT firstname, lastname, email, updatedAt, discount, lastWorked\n" +
 				"FROM customer LEFT JOIN employee using(firstname, lastname, email)\n" +
 				"UNION\n" +
-				"SELECT firstname, lastname, email, lastVisited, discount, lastWorked\n" +
+				"SELECT firstname, lastname, email, updatedAt, discount, lastWorked\n" +
 				"FROM customer RIGHT JOIN employee using(firstname, lastname, email)";
 		try {
 			Statement statement = (Statement) connection.createStatement();
@@ -750,10 +752,13 @@ public class Operation {
 				String fn = rs.getString("firstName");
 				String ln = rs.getString("lastName");
 				String email = rs.getString("email");
-				String lastVisited = rs.getString("lastVisited");
+				String updated = rs.getString("updatedAt");
+				String updatedAt = "null";
+				if (updated != null)
+					updatedAt = updated.toString();
 				int discount = rs.getInt("discount");
 
-				Customer customer = new Customer(fn, ln, email, lastVisited, discount);
+				Customer customer = new Customer(fn, ln, email, updatedAt, discount);
 				list.add(customer);
 			}
 
@@ -791,10 +796,10 @@ public class Operation {
 				String firstName = rs.getString("firstName");
 				String lastName = rs.getString("lastName");
 				String email = rs.getString("email");
-				Date lastVisited = rs.getDate("lastVisited");
+				Date updatedAt = rs.getDate("updatedAt");
 				int discount = rs.getInt("discount");
 
-				Customer customer = new Customer(firstName, lastName, email, lastVisited.toString(), discount);
+				Customer customer = new Customer(firstName, lastName, email, updatedAt.toString(), discount);
 
 				list.add(customer);
 			}
@@ -813,19 +818,18 @@ public class Operation {
 	}
 
 	/**
-	 * Archive 3 tables, customers, employees, and receipts
-	 * @return true if archive successfully, false otherwise
+	 * Archive customers with a given date
+	 * @param date
+	 * @return true if succeed, false otherwise
      */
-	public boolean archive() {
-		String aEmployeesSQL = "Call archiveEmployees(\"2015-12-12\")";
-		String aCustomersSQL = "Call archiveCustomers('2015-12-12')";
-		String aReceiptsSQL = "Call archiveReceipts('2015-12-12')";
+	public boolean archive(String date) {
+		String sql = "call archiveCustomers(?)";
+
 
 		try {
-			Statement statement = (Statement) connection.createStatement();
-//			statement.execute(aCustomersSQL);
-			statement.execute(aEmployeesSQL);
-//			statement.execute(aReceiptsSQL);
+			PreparedStatement statement = (PreparedStatement) connection.prepareStatement(sql);
+			statement.setString(1, date);
+			statement.execute();
 
 			if (statement != null) {
 				statement.close();
@@ -854,10 +858,10 @@ public class Operation {
 				String firstname = rs.getString("firstName");
 				String lastname = rs.getString("lastName");
 				String email = rs.getString("email");
-				String lastVisited = rs.getDate("lastVisited").toString();
+				String updatedAt = rs.getDate("updatedAt").toString();
 				int discount = rs.getInt("discount");
 
-				Customer customer = new Customer(firstname, lastname, email, lastVisited, discount);
+				Customer customer = new Customer(firstname, lastname, email, updatedAt, discount);
 //				customer.setId(id);
 				list.add(customer);
 			}
@@ -874,78 +878,6 @@ public class Operation {
 	}
 
 
-	/**
-	 * Get All archived employees
-	 * @return a list of all archived employees
-     */
-	public ArrayList<Employee> getArchivedEmployees() {
-		String sql = "SELECT * From ARC_EMPLOYEE";
-
-		try {
-			Statement statement = (Statement) connection.createStatement();
-			ResultSet rs = statement.executeQuery(sql);
-			ArrayList<Employee> list = new ArrayList<>();
-
-			while (rs.next()) {
-				int eid = rs.getInt("eid");
-				String fn = rs.getString("firstName");
-				String ln = rs.getString("lastName");
-				String position = rs.getString("position");
-				String email = rs.getString("email");
-				String lastworked = rs.getDate("lastworked").toString();
-
-				Employee em = new Employee(fn, ln, email, position, lastworked);
-//				em.setId(eid);
-
-				list.add(em);
-			}
-
-			if (statement != null) statement.close();
-
-			return  list;
 
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-			return null;
-		}
-	}
-
-	/**
-	 * Get all archived receipts
-	 * @return a list of all archived receipts
-     */
-	public ArrayList<Receipt> getArchivedReceipts () {
-		String sql = "SELECT * From arc_receipt";
-
-		try {
-			Statement statement = (Statement) connection.createStatement();
-			ResultSet rs = statement.executeQuery(sql);
-			ArrayList<Receipt> list = new ArrayList<>();
-
-			while (rs.next()) {
-				int rid = rs.getInt("rid");
-				int eid = rs.getInt("eid");
-				int cid = rs.getInt("cid");
-				double subtotal = rs.getDouble("subtotal");
-				double gratuity = rs.getDouble("gratuity");
-				String billDate = rs.getDate("billDate").toString();
-
-				Receipt receipt = new Receipt(rid, eid, cid, subtotal, gratuity, billDate);
-				list.add(receipt);
-			}
-
-			if (statement != null) {
-				statement.close();
-			}
-
-			return list;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-			return null;
-		}
-	}
 }

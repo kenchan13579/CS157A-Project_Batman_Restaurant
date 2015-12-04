@@ -17,12 +17,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
 
@@ -289,60 +291,61 @@ public class AdminController {
         clnCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
         TableColumn cEmailCol = new TableColumn("Email");
         cEmailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
-        TableColumn cLastVisitedCol = new TableColumn("Last Visited");
-        cLastVisitedCol.setCellValueFactory(new PropertyValueFactory<>("lastVisited"));
+        TableColumn cUpdatedAtCol = new TableColumn("Updated At");
+        cUpdatedAtCol.setCellValueFactory(new PropertyValueFactory<>("updatedAt"));
         TableColumn cDiscountCol = new TableColumn("Discount");
         cDiscountCol.setCellValueFactory(new PropertyValueFactory<>("discount"));
 
-        cTable.getColumns().addAll(cfnCol, clnCol, cEmailCol, cLastVisitedCol, cDiscountCol);
+        cTable.getColumns().addAll(cfnCol, clnCol, cEmailCol, cUpdatedAtCol, cDiscountCol);
         cTable.setItems(data);
         cTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        //Set up for Customers who do not tip
-        Text header2 = new Text("Customer who do not tip");
-        header2.setFont(new Font("System", 24));
-
-        ObservableList<Customer> data2 = FXCollections.observableArrayList(operation.getCustomersWhoDoNotTip());
-        TableView table2 = new TableView();
-
-        TableColumn cfnCol2 = new TableColumn("First Name");
-        cfnCol2.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-        TableColumn clnCol2 = new TableColumn("Last Name");
-        clnCol2.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-        TableColumn cEmailCol2 = new TableColumn("Email");
-        cEmailCol2.setCellValueFactory(new PropertyValueFactory<>("email"));
-        TableColumn cLastVisitedCol2 = new TableColumn("Last Visited");
-        cLastVisitedCol2.setCellValueFactory(new PropertyValueFactory<>("lastVisited"));
-        TableColumn cDiscountCol2 = new TableColumn("Discount");
-        cDiscountCol2.setCellValueFactory(new PropertyValueFactory<>("discount"));
-
-        table2.getColumns().addAll(cfnCol2, clnCol2, cEmailCol2, cLastVisitedCol2, cDiscountCol2);
-        table2.setItems(data2);
-        table2.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
-        //Set up for customers who spends more than 100
-        Text header3 = new Text("Customers who spends more than $100");
-        header3.setFont(new Font("System", 24));
-
-        ObservableList<Customer> data3 = FXCollections.observableArrayList(operation.getCustomersWhoSpendsMoreThan100());
-        TableView table3 = new TableView();
-
-        TableColumn cfnCol3 = new TableColumn("First Name");
-        cfnCol3.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-        TableColumn clnCol3 = new TableColumn("Last Name");
-        clnCol3.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-        TableColumn cEmailCol3 = new TableColumn("Email");
-        cEmailCol3.setCellValueFactory(new PropertyValueFactory<>("email"));
-        TableColumn cLastVisitedCol3 = new TableColumn("Last Visited");
-        cLastVisitedCol3.setCellValueFactory(new PropertyValueFactory<>("lastVisited"));
-        TableColumn cDiscountCol3 = new TableColumn("Discount");
-        cDiscountCol3.setCellValueFactory(new PropertyValueFactory<>("discount"));
-
-        table3.getColumns().addAll(cfnCol3, clnCol3, cEmailCol3, cLastVisitedCol3, cDiscountCol3);
-        table3.setItems(data3);
-        table3.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
-        box.getChildren().addAll(cHeader, cTable, header2, table2, header3, table3);
+//        //Set up for Customers who do not tip
+//        Text header2 = new Text("Customer who do not tip");
+//        header2.setFont(new Font("System", 24));
+//
+//        ObservableList<Customer> data2 = FXCollections.observableArrayList(operation.getCustomersWhoDoNotTip());
+//        TableView table2 = new TableView();
+//
+//        TableColumn cfnCol2 = new TableColumn("First Name");
+//        cfnCol2.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+//        TableColumn clnCol2 = new TableColumn("Last Name");
+//        clnCol2.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+//        TableColumn cEmailCol2 = new TableColumn("Email");
+//        cEmailCol2.setCellValueFactory(new PropertyValueFactory<>("email"));
+//        TableColumn cUpdatedAtCol2 = new TableColumn("Updated At");
+//        cUpdatedAtCol2.setCellValueFactory(new PropertyValueFactory<>("updatedAt"));
+//        TableColumn cDiscountCol2 = new TableColumn("Discount");
+//        cDiscountCol2.setCellValueFactory(new PropertyValueFactory<>("discount"));
+//
+//        table2.getColumns().addAll(cfnCol2, clnCol2, cEmailCol2, cUpdatedAtCol2, cDiscountCol2);
+//        table2.setItems(data2);
+//        table2.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+//
+//        //Set up for customers who spends more than 100
+//        Text header3 = new Text("Customers who spends more than $100");
+//        header3.setFont(new Font("System", 24));
+//
+//        ObservableList<Customer> data3 = FXCollections.observableArrayList(operation.getCustomersWhoSpendsMoreThan100());
+//        TableView table3 = new TableView();
+//
+//        TableColumn cfnCol3 = new TableColumn("First Name");
+//        cfnCol3.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+//        TableColumn clnCol3 = new TableColumn("Last Name");
+//        clnCol3.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+//        TableColumn cEmailCol3 = new TableColumn("Email");
+//        cEmailCol3.setCellValueFactory(new PropertyValueFactory<>("email"));
+//        TableColumn cUpdatedAtCol3 = new TableColumn("Updated At");
+//        cUpdatedAtCol3.setCellValueFactory(new PropertyValueFactory<>("updatedAt"));
+//        TableColumn cDiscountCol3 = new TableColumn("Discount");
+//        cDiscountCol3.setCellValueFactory(new PropertyValueFactory<>("discount"));
+//
+//        table3.getColumns().addAll(cfnCol3, clnCol3, cEmailCol3, cUpdatedAtCol3, cDiscountCol3);
+//        table3.setItems(data3);
+//        table3.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+//
+//        box.getChildren().addAll(cHeader, cTable, header2, table2, header3, table3);
+        box.getChildren().addAll(cHeader, cTable);
         scrollPane.setContent(box);
     }
 
@@ -564,52 +567,95 @@ public class AdminController {
         //clear old content
         contentPane.getChildren().clear();
 
-        // set up
-        titleLabel.setText("Archives");
+        // ask for archive date
+        titleLabel.setText("Archiving");
 
-        // Scroll pane
-        ScrollPane scrollPane = new ScrollPane();
+        //create text and textfield
+        VBox mainBox = new VBox();
+        mainBox.setSpacing(20);
+        mainBox.setAlignment(Pos.CENTER);
 
-        // add scroll pane to the content pane
-        contentPane.getChildren().add(scrollPane);
+        HBox box = new HBox();
+        contentPane.getChildren().add(mainBox);
 
-        // create vbox
-        VBox box = new VBox();
         box.setSpacing(5);
+        box.setAlignment(Pos.TOP_CENTER);
 
-        //create archive table for Employees
-        Text eTitle = new Text("Archived Employees");
-        eTitle.setFont(new Font("System", 24));
+        Label dateLabel = new Label("Cut Off Date:");
+        dateLabel.setFont(new Font("System", 24));
 
-        if (operation.archive()) {
-            //Table for employees
-            ObservableList<Employee> edata = FXCollections.observableArrayList(operation.getArchivedEmployees());
-            TableView eTable = new TableView();
+        TextField dateTF = new TextField();
+        dateTF.setPromptText("YYYY-MM-DD");
 
-            TableColumn efnCol = new TableColumn("First Name");
-            efnCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-            TableColumn elnCol = new TableColumn("Last Name");
-            elnCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-            TableColumn epositionCol = new TableColumn("Position");
-            epositionCol.setCellValueFactory(new PropertyValueFactory<>("position"));
-            TableColumn eemailCol = new TableColumn("Email");
-            eemailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
-            TableColumn elastworkedCol = new TableColumn("Last Worked");
-            elastworkedCol.setCellValueFactory(new PropertyValueFactory<>("lastWorked"));
+        Label errorLabel = new Label();
+        errorLabel.setTextFill(Paint.valueOf("#f5515f"));
+        errorLabel.setFont(new Font("System", 14));
+
+        Button confirmButton = new Button("Confirm");
+        confirmButton.setStyle("-fx-background-color: #e63347;" +
+                "-fx-background-radius: 7;" +
+                "-fx-text-fill: white");
+        confirmButton.setPrefSize(130, 40);
+
+        confirmButton.setOnAction(e-> {
+            if (dateTF.getText() != null) {
+                String cutoffDate = dateTF.getText().trim();
+                if (cutoffDate.length() > 10) {
+                    errorLabel.setText("Too long");
+                    return;
+                } else if (!isDate(cutoffDate)) {
+                    errorLabel.setText("Wrong date format");
+                    return;
+                }
+
+                boolean success = operation.archive(cutoffDate);
+                if (success) {
+                    //set up content
+                    contentPane.getChildren().clear();
+
+                    TableView table = new TableView();
+                    TableColumn fnCol = new TableColumn("First Name");
+                    fnCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+                    TableColumn lnCol = new TableColumn("Last Name");
+                    lnCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+                    TableColumn emailCol = new TableColumn("Email");
+                    emailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
+                    TableColumn lvCol = new TableColumn("Updated At");
+                    lvCol.setCellValueFactory(new PropertyValueFactory<>("updatedAt"));
+                    TableColumn discountCol = new TableColumn("Discount");
+                    discountCol.setCellValueFactory(new PropertyValueFactory<>("discount"));
+
+                    table.getColumns().addAll(fnCol, lnCol, emailCol, lvCol, discountCol);
+                    ObservableList<Customer> data = FXCollections.observableArrayList(operation.getArchivedCustomers());
+                    table.setItems(data);
+
+                    contentPane.getChildren().add(table);
+
+                    titleLabel.setText("Archived Customers");
+
+                } else {
+                    titleLabel.setText("Can't archive");
+                    return;
+                }
+
+            } else {
+                errorLabel.setText("Please enter a date");
+                return;
+            }
+        });
 
 
-            eTable.getColumns().addAll(efnCol, elnCol, epositionCol, eemailCol, elastworkedCol);
-            eTable.setItems(edata);
-            eTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-            box.getChildren().addAll(eTitle, eTable);
+        box.getChildren().addAll(dateLabel, dateTF, errorLabel);
+        mainBox.getChildren().addAll(box, confirmButton);
+    }
 
-            scrollPane.setContent(box);
-
-        } else {
-            titleLabel.setText("Can't Archive");
-            return;
-        }
-
+    /**
+     * Check if a given string is in a date format yyyy-mm-dd
+     * @param s a given string
+     * @return true if a string is in format yyyy-mm-dd, false otherwise
+     */
+    static boolean isDate(String s) {
+        return s.matches("([0-9]{4})-([0-9]{2})-([0-9]{2})");
     }
 
 }
