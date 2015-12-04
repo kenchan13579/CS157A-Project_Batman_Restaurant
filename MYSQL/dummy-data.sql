@@ -84,13 +84,6 @@ INSERT INTO RATING (cID, stars, feedback) VALUES (5, 4,  "This has been our seco
 INSERT INTO RATING (cID, stars, feedback) VALUES (8, 5,  "Nice atmosphere, friendly service, great food");
 INSERT INTO RATING (cID, stars, feedback) VALUES (4, 5,  "Love the soup, great flavor and good price");
 
-
-# RECEIPT
-INSERT INTO RECEIPT (eId, cID, subtotal, gratuity, billDate) VALUES (1, 2, 123.12, 10.5, curdate());
-INSERT INTO RECEIPT (eId, cID, subtotal, gratuity, billDate) VALUES (2, 3, 43.97, 0, curdate());
-INSERT INTO RECEIPT (eID, cID, subtotal, gratuity, billDate) VALUES (5, 5, 78.87, 22.5, curdate());
-INSERT INTO RECEIPT (eID, cID, subtotal, gratuity, billDate) VALUES (3, 7, 343.35, 55, curdate());
-
 # RESERVATIONS
 INSERT INTO RESERVATION (tID, cID, partySize, reservationDate) VALUES (1, 2, 3, curdate());
 INSERT INTO RESERVATION (tID, cID, partySize, reservationDate) VALUES (4, 5, 4, curdate());
