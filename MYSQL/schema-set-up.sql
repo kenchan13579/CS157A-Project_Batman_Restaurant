@@ -142,27 +142,8 @@ DROP PROCEDURE IF EXISTS archiveReceipts;
 DELIMITER $$
 CREATE PROCEDURE archiveReceipts (IN oldDate DATE)
 BEGIN
-	INSERT INTO arc_Receipt  ( SELECT * FROM Receipt WHERE date<oldDate);
-	DELETE FROM Receipt WHERE date<oldDate;
+	INSERT INTO arc_Receipt  ( SELECT * FROM Receipt WHERE billDate<oldDate);
+	DELETE FROM Receipt WHERE billDate<oldDate;
 END $$
 DELIMITER ;
 
-/* archive customers */
-DROP PROCEDURE IF EXISTS archiveCustomers;
-DELIMITER $$
-CREATE PROCEDURE archiveCustomers (IN oldDate DATE)
-BEGIN
-	INSERT INTO arc_Customer  ( SELECT * FROM Customer WHERE lastVisited<oldDate);
-	DELETE FROM Customer WHERE lastVisited<oldDate;
-END $$
-DELIMITER ;
-
-/* archive employees */
-DROP PROCEDURE IF EXISTS archiveEmployees;
-DELIMITER $$
-CREATE PROCEDURE archiveEmployees(IN oldDate DATE)
-BEGIN
-	INSERT INTO arc_Employee  ( SELECT * FROM Employee WHERE lastWorked<oldDate);
-	DELETE FROM Employee WHERE lastWorked<oldDate;
-END $$
-DELIMITER ;
