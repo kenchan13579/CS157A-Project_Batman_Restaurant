@@ -81,6 +81,26 @@ public class AdminController {
         configureWidthHeightForImageViews();
         configureButtons();
         contentPane.setAlignment(Pos.CENTER);
+
+
+        //show all customers and all employees
+        titleLabel.setText("All Customers and All Employees");
+        TableView table = new TableView();
+
+        TableColumn fnCol = new TableColumn("First Name");
+        fnCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        TableColumn lnCol = new TableColumn("Last Name");
+        lnCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        TableColumn emailCol = new TableColumn("email");
+        emailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
+        emailCol.setPrefWidth(450);
+
+        table.getColumns().addAll(fnCol, lnCol, emailCol);
+
+        ObservableList<Person> data = FXCollections.observableArrayList(operation.getAllCustomersAndEmployees());
+        table.setItems(data);
+
+        contentPane.getChildren().add(table);
     }
 
     private void configureWidthHeightForImageViews() {

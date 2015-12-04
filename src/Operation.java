@@ -622,6 +622,38 @@ public class Operation {
 	}
 
 	/**
+	 * Get all customers and all employees
+	 * @return a list of all people
+     */
+	public ArrayList<Person> getAllCustomersAndEmployees() {
+		String sql = "SELECT firstname, lastname, email, lastVisited, discount, lastWorked\n" +
+				"FROM customer LEFT JOIN employee using(firstname, lastname, email)\n" +
+				"UNION\n" +
+				"SELECT firstname, lastname, email, lastVisited, discount, lastWorked\n" +
+				"FROM customer RIGHT JOIN employee using(firstname, lastname, email)";
+		try {
+			Statement statement = (Statement) connection.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+			ArrayList<Person> list = new ArrayList<>();
+
+			while (rs.next()) {
+				String fn = rs.getString("firstName");
+				String ln = rs.getString("lastName");
+				String email = rs.getString("email");
+
+				Person person = new Person(fn, ln, email);
+				list.add(person);
+			}
+
+			if (statement != null) statement.close();
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
 	 * Get All Employees
 	 * @return a list of all employees
      */
