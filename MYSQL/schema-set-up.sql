@@ -79,6 +79,7 @@ cID INT NOT NULL,
 subtotal DECIMAL(10,2) NOT NULL,
 gratuity DECIMAL(10,2) NOT NULL,
 billDate DATE NOT NULL,
+updatedAt DATE ON UPDATE CURDATE(),
 PRIMARY KEY (rID) ,
 FOREIGN KEY (eID) REFERENCES EMPLOYEE(eID),
 FOREIGN KEY (cID) REFERENCES CUSTOMER(cID),
@@ -142,27 +143,7 @@ DROP PROCEDURE IF EXISTS archiveReceipts;
 DELIMITER $$
 CREATE PROCEDURE archiveReceipts (IN oldDate DATE)
 BEGIN
-	INSERT INTO arc_Receipt  ( SELECT * FROM Receipt WHERE date<oldDate);
-	DELETE FROM Receipt WHERE date<oldDate;
-END $$
-DELIMITER ;
-
-/* archive customers */
-DROP PROCEDURE IF EXISTS archiveCustomers;
-DELIMITER $$
-CREATE PROCEDURE archiveCustomers (IN oldDate DATE)
-BEGIN
-	INSERT INTO arc_Customer  ( SELECT * FROM Customer WHERE lastVisited<oldDate);
-	DELETE FROM Customer WHERE lastVisited<oldDate;
-END $$
-DELIMITER ;
-
-/* archive employees */
-DROP PROCEDURE IF EXISTS archiveEmployees;
-DELIMITER $$
-CREATE PROCEDURE archiveEmployees(IN oldDate DATE)
-BEGIN
-	INSERT INTO arc_Employee  ( SELECT * FROM Employee WHERE lastWorked<oldDate);
-	DELETE FROM Employee WHERE lastWorked<oldDate;
+	INSERT INTO arc_Receipt  ( SELECT rID, eID, cID, subtotal, gratuity, billDate FROM Receipt WHERE updatedAt<oldDate);
+	DELETE FROM Receipt WHERE updatedAt<oldDate;
 END $$
 DELIMITER ;
