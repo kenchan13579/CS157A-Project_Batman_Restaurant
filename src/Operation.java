@@ -13,7 +13,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 /**
  * Operation performs SQL Functions to manipulate data of the database
  */
@@ -58,32 +57,6 @@ public class Operation {
 			return null;
 		}
 	}
-
-
-	/**
-	 * get number of available tables
-	 * @return number of available tables
-	 */
-	public int numOfAvailableTable() {
-		String sql ="SELECT count(*) FROM aTable WHERE available = TRUE";
-		int res = 0;
-		try {
-			PreparedStatement statement = (PreparedStatement) connection.prepareStatement(sql);
-			ResultSet rs = statement.executeQuery();
-			if ( rs.next()) {
-				res = rs.getInt(0);
-			}
-			statement.close();
-			rs.close();
-			return res;
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return -1;
-		}
-	}
-
 
 	/**
 	 * Add a customer
@@ -256,7 +229,6 @@ public class Operation {
 	 * @return true if success, false otherwise
 	 * @throws SQLException
      */
-
 	public boolean changeReservation(String email , Date date, int partySize) throws SQLException {
 		boolean success = false;
 		PreparedStatement updateReservation = null;
@@ -329,7 +301,6 @@ public class Operation {
 		}
 	}
 
-
 	/**
 	 * Get ratings and feedbacks
 	 * @return list of ratings and feedbacks in Rating objects
@@ -364,7 +335,6 @@ public class Operation {
 		}
 	}
 
-
 	/**
 	 * Get average rating
 	 * @return average rating in double or -1 if fails
@@ -393,7 +363,6 @@ public class Operation {
 
 	}
 
-
 	/**
 	 * Get the number of employees by position
 	 * @param position position in string
@@ -418,102 +387,6 @@ public class Operation {
 			e.printStackTrace();
 			System.out.println("Error! Cannot get numeber of employees by position");
 			return -1;
-		}
-	}
-
-
-	/**
-	 * Get a number of available tables on a specific date
-	 * @param date date
-	 * @return number of available tables, 0 if date is not specified, -1 if we have sql exception
-     */
-	public int numOfAvailableTableOn(Date date) {
-		String sql = "select (select count(*) from atable) - count(*)\n" +
-				"from reservation\n" +
-				"where date=?";
-
-		if (date == null) {
-			return 0;
-		}
-
-		try {
-			PreparedStatement statement = (PreparedStatement) connection.prepareStatement(sql);
-			statement.setDate(1, date);
-			ResultSet rs = statement.executeQuery();
-			statement.close();
-			return rs.getInt(0);
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("error at number of available table on date");
-			return -1;
-		}
-	}
-
-
-	public ArrayList<Item> checkItemQuantity() {
-		return null;
-	}
-
-	/**
-	 * Get revenue by date
-	 * @param date date
-	 * @return revenue, -1 if there is sql error
-     */
-	public double revenue(Date date) {
-		String sql = "SELECT sum(subtotal)\n" +
-				"FROM Receipt\n" +
-				"WHERE date=?";
-
-		try {
-			PreparedStatement statement = (PreparedStatement) connection.prepareStatement(sql);
-			statement.setDate(1, date);
-			ResultSet rs = statement.executeQuery();
-			return rs.getInt(0);
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("Error at get revenue");
-			return -1;
-		}
-	}
-
-
-	/**
-	 * Track previous items ordered by a customer
-	 * @param customerID a customer id
-	 * @return a list of items that customer ordered. Item objects contain item name and total quantity
-     */
-	public ArrayList<Item> getItemsOrderedByCustomer(int customerID) {
-		String sql = "SELECT itemName, sum(quantity)\n" +
-				"\tFROM Receipt JOIN Receipt_Item JOIN Menu\n" +
-				"\tWHERE cID=?\n" +
-				"\tGROUP BY itemName";
-
-		try {
-			PreparedStatement statement = (PreparedStatement) connection.prepareStatement(sql);
-			statement.setInt(1, customerID);
-			ResultSet rs = statement.executeQuery();
-			ArrayList<Item> list = new ArrayList<>();
-			while (rs.next()) {
-				String itemName = rs.getString("itemName");
-				int sum = rs.getInt(1);
-				Item item = new Item();
-				item.setItemName(itemName);
-				item.setQuantityAvailable(sum);
-				list.add(item);
-			}
-
-			if (statement != null) {
-				statement.close();
-			}
-
-			return list;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("Error at get items ordered by a customer");
-			return null;
 		}
 	}
 
@@ -548,78 +421,6 @@ public class Operation {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
-			return null;
-		}
-	}
-
-
-	/**
-	 * Get subtotal price of a meal
-	 * @param receiptID receipt ID
-	 * @return a subtotal price of a meal
-     */
-	public double getTotalPriceOfAMeal(int receiptID) {
-		String sql = "SELECT subtotal\n" +
-				"\tFROM Receipt\n" +
-				"\tWHERE receiptID=?";
-
-		try {
-			PreparedStatement statement = (PreparedStatement) connection.prepareStatement(sql);
-			statement.setInt(1, receiptID);
-			ResultSet rs = statement.executeQuery();
-
-			double subtotal = rs.getInt(0);
-
-			if (statement != null) {
-				statement.close();
-			}
-
-			return subtotal;
-
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("Error at get total price of a meal");
-			return -1;
-		}
-	}
-
-
-	/**
-	 * Get a list of spenders who spend more than 100
-	 * @return a list of customers with id, first name, last name
-     */
-	public ArrayList<Customer> getCustomersWhoSpendsMoreThan100() {
-		String sql = "SELECT * FROM Customer " +
-				"NATURAL JOIN Receipt " +
-				"GROUP BY cID " +
-				"HAVING avg(subtotal)> 100;";
-
-		try {
-			Statement statement = (Statement) connection.createStatement();
-			ResultSet rs = statement.executeQuery(sql);
-			ArrayList<Customer> list = new ArrayList<>();
-			while (rs.next()) {
-				int cid = rs.getInt("cid");
-				String firstName = rs.getString("firstName");
-				String lastName = rs.getString("lastName");
-				Customer customer = new Customer();
-				customer.setFirstName(firstName);
-				customer.setLastName(lastName);
-				customer.setId(cid);
-				list.add(customer);
-			}
-
-			if (statement != null) {
-				statement.close();
-
-			}
-
-			return list;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("Error at get customer who spends more than 100");
 			return null;
 		}
 	}
@@ -776,49 +577,6 @@ public class Operation {
 	}
 
 	/**
-	 * Get customers who do not tip
-	 * @return a list of customers
-     */
-	public ArrayList<Customer> getCustomersWhoDoNotTip() {
-		String sql = "SELECT *\n" +
-				"\tFROM Customer\n" +
-				"\tWHERE EXISTS (\n" +
-				"\t\tSELECT *\n" +
-				"\t\tFROM Receipt\n" +
-				"\t\tWHERE Customer.cID=Receipt.cID AND gratuity=0)";
-
-		try {
-			Statement statement = (Statement) connection.createStatement();
-			ResultSet rs = statement.executeQuery(sql);
-			ArrayList<Customer> list = new ArrayList<>();
-
-			while (rs.next()) {
-				int customerID = rs.getInt("cid");
-				String firstName = rs.getString("firstName");
-				String lastName = rs.getString("lastName");
-				String email = rs.getString("email");
-				Date updatedAt = rs.getDate("updatedAt");
-				int discount = rs.getInt("discount");
-
-				Customer customer = new Customer(firstName, lastName, email, updatedAt.toString(), discount);
-
-				list.add(customer);
-			}
-
-			if (statement != null) {
-				statement.close();
-			}
-
-			return list;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("Error at get customer who do not tip");
-			return null;
-		}
-	}
-
-	/**
 	 * Archive customers with a given date
 	 * @param date
 	 * @return true if succeed, false otherwise
@@ -895,41 +653,6 @@ public class Operation {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 			return false;
-		}
-	}
-
-	/**
-	 * Get tables that are available for a customer to reserve
-	 * @param date the requested reservation date
-     * @return a list of available tables
-     */
-	public ArrayList<Table> checkAvailability(String date) {
-		String sql = "SELECT * FROM aTable WHERE NOT EXISTS (SELECT * FROM Reservation " +
-				"WHERE reservationDate=? AND aTable.tID=Reservation.tID)";
-		try {
-			PreparedStatement statement = (PreparedStatement) connection.prepareStatement(sql);
-			statement.setString(1, date);
-			ResultSet rs = statement.executeQuery();
-			ArrayList<Table> list = new ArrayList<>();
-			while (rs.next()) {
-				int tid = rs.getInt("tid");
-				int eid = rs.getInt("eid");
-				int seats = rs.getInt("seats");
-				boolean available = rs.getBoolean("available");
-
-				Table table = new Table(tid, eid, seats, available);
-//				customer.setId(id);
-				list.add(table);
-			}
-
-			if (statement != null) statement.close();
-
-			return list;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-			return null;
 		}
 	}
 

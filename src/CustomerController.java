@@ -30,11 +30,9 @@ public class CustomerController {
     private Operation operation = new Operation(connection);
     private int currentCustomerID;
 
-
     public void setCurrentCustomerID(int value) {
         this.currentCustomerID = value;
     }
-
 
     @FXML
     private Label titleLabel;
@@ -108,7 +106,6 @@ public class CustomerController {
         drinkMenuSelectedIMV.setFitWidth(56);
         drinkMenuSelectedIMV.setFitHeight(59);
 
-
         // reservations
         reservationsIMV.setFitWidth(63);
         reservationsIMV.setFitHeight(55);
@@ -121,13 +118,11 @@ public class CustomerController {
         rateSelectedIMV.setFitWidth(32);
         rateSelectedIMV.setFitHeight(60);
 
-
         //profile
         profileIMV.setFitWidth(32);
         profileIMV.setFitHeight(58);
         profileSelectedIMV.setFitWidth(32);
         profileSelectedIMV.setFitHeight(58);
-
     }
 
     private void configureButtons() {
@@ -147,7 +142,6 @@ public class CustomerController {
         drinkMenuButton.setGraphic(drinkMenuIMV);
         drinkMenuButton.setStyle("-fx-background-color: transparent");
 
-
         //reservations button
         reservationsButton.setGraphic(reservationsIMV);
         reservationsButton.setStyle("-fx-background-color: transparent");
@@ -159,8 +153,6 @@ public class CustomerController {
         //profile button
         profileButton.setGraphic(profileIMV);
         profileButton.setStyle("-fx-background-color: transparent");
-
-
     }
 
     private void getAllImageViewsForButtons() {
@@ -219,7 +211,6 @@ public class CustomerController {
         HBox hbox6 = new HBox();
         HBox hbox7 = new HBox();
 
-
         //4 labels for table, date, party size
         Label tableLabel = new Label("Table:");
         Label dateLabel = new Label("Date:");
@@ -236,7 +227,6 @@ public class CustomerController {
         lastNameLabel.setFont(new Font("System", 24));
         emailLabel.setFont(new Font("System", 24));
 
-
         //4 textfields for data
         TextField tableTextField = new TextField();
         tableTextField.setPromptText("0-14");
@@ -250,7 +240,6 @@ public class CustomerController {
         lastnameTextField.setPromptText("Last Name");
         TextField emailTextField = new TextField();
         emailTextField.setPromptText("Email");
-
 
         hbox1.getChildren().addAll(tableLabel, tableTextField);
         hbox1.setAlignment(Pos.CENTER);
@@ -276,8 +265,6 @@ public class CustomerController {
         hbox6.setAlignment(Pos.CENTER);
         hbox6.setSpacing(100);
 
-
-
         //Confirm button
         Button confirmButton = new Button("Confirm");
         confirmButton.setStyle("-fx-background-color: #e63347;" +
@@ -296,7 +283,6 @@ public class CustomerController {
                 String email = emailTextField.getText().trim();
                 Date date = Date.valueOf(dateTextField.getText().trim());
 
-
                 Customer customer = new Customer();
                 customer.setFirstName(firstname);
                 customer.setLastName(lastname);
@@ -309,11 +295,9 @@ public class CustomerController {
                 } else {
                     titleLabel.setText("Error! Can't reserve a table");
                 }
-
             } else {
                 titleLabel.setText("Empty Fields. Please Enter Info");
             }
-
         });
 
         hbox7.getChildren().add(confirmButton);
@@ -349,7 +333,6 @@ public class CustomerController {
 
         contentPane.getChildren().add(box);
         titleLabel.setText("Food Menu");
-
     }
 
     @FXML
@@ -371,7 +354,6 @@ public class CustomerController {
         contentPane.getChildren().add(box);
         titleLabel.setText("Drink Menu");
     }
-
 
     @FXML
     private void reservationsButtonClicked(ActionEvent event) {
@@ -404,8 +386,6 @@ public class CustomerController {
         partySizeLabel.setFont(newFont);
         emailLabel.setFont(newFont);
 
-
-
         //3 textfields for data
         TextField tableTextField = new TextField();
         tableTextField.setPromptText("0-14");
@@ -415,7 +395,6 @@ public class CustomerController {
         partySizeTextField.setPromptText("0-10");
         TextField emailTextField = new TextField();
         emailTextField.setPromptText("Email");
-
 
         hbox1.getChildren().addAll(tableLabel, tableTextField);
         hbox1.setAlignment(Pos.CENTER);
@@ -455,7 +434,6 @@ public class CustomerController {
                     titleLabel.setText("Something wrong!");
                 }
 
-
                 contentPane.getChildren().clear();
                 if (success) {
                     titleLabel.setText("Your reservation has been updated!");
@@ -465,7 +443,6 @@ public class CustomerController {
             } else {
                 titleLabel.setText("Information missing. Do it again!");
             }
-
         });
 
         //Cancel button
@@ -491,9 +468,7 @@ public class CustomerController {
             } else {
                 titleLabel.setText("Something wrong!");
             }
-
         });
-
 
         hbox5.getChildren().addAll(cancelButton, updateButton);
         hbox5.setAlignment(Pos.CENTER);
@@ -508,11 +483,7 @@ public class CustomerController {
 
         //add all to contentpane
         contentPane.getChildren().add(box);
-
-
-
     }
-
 
     @FXML
     private void rateButtonClicked(ActionEvent event) {
@@ -524,8 +495,6 @@ public class CustomerController {
 
         // set up
         titleLabel.setText("Rating and Feedback");
-
-
 
         // rating box
         HBox ratingBox = new HBox();
@@ -558,11 +527,9 @@ public class CustomerController {
             public void handle(ActionEvent event) {
                 if (star1.isSelected()) {
                     star1.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(yellowStarURL))));
-
                 } else {
                     star1.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(blankStarURL))));
                 }
-
             }
         });
 
@@ -571,10 +538,8 @@ public class CustomerController {
             public void handle(ActionEvent event) {
                 if (star2.isSelected()) {
                     star2.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(yellowStarURL))));
-
                 } else
                     star2.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(blankStarURL))));
-
             }
         });
 
@@ -583,10 +548,8 @@ public class CustomerController {
             public void handle(ActionEvent event) {
                 if (star3.isSelected()) {
                     star3.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(yellowStarURL))));
-
                 } else
                     star3.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(blankStarURL))));
-
             }
         });
 
@@ -595,10 +558,8 @@ public class CustomerController {
             public void handle(ActionEvent event) {
                 if (star4.isSelected()) {
                     star4.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(yellowStarURL))));
-
                 } else
                     star4.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(blankStarURL))));
-
             }
         });
 
@@ -607,13 +568,10 @@ public class CustomerController {
             public void handle(ActionEvent event) {
                 if (star5.isSelected()) {
                     star5.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(yellowStarURL))));
-
                 } else
                     star5.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(blankStarURL))));
-
             }
         });
-
 
         // feedback box
         VBox feedBackBox = new VBox();
@@ -661,7 +619,6 @@ public class CustomerController {
                     titleLabel.setText("Rating fails.");
                 }
 
-
                 contentPane.getChildren().clear();
 
                 if (success) {
@@ -686,7 +643,6 @@ public class CustomerController {
         mainBox.getChildren().addAll(ratingBox, feedBackBox);
 
         contentPane.getChildren().add(mainBox);
-
     }
 
     @FXML
@@ -753,7 +709,5 @@ public class CustomerController {
 
         contentPane.getChildren().add(box);
         titleLabel.setText("Profile");
-
     }
-
 }

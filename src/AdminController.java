@@ -187,7 +187,6 @@ public class AdminController {
     @FXML
     private void goHomeScreen(ActionEvent event) {
 
-
         //get reference to WelcomeScreen stage
         Stage stage = (Stage) mainGridPane.getScene().getWindow();
 
@@ -345,51 +344,6 @@ public class AdminController {
         cTable.setItems(data);
         cTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-//        //Set up for Customers who do not tip
-//        Text header2 = new Text("Customer who do not tip");
-//        header2.setFont(new Font("System", 24));
-//
-//        ObservableList<Customer> data2 = FXCollections.observableArrayList(operation.getCustomersWhoDoNotTip());
-//        TableView table2 = new TableView();
-//
-//        TableColumn cfnCol2 = new TableColumn("First Name");
-//        cfnCol2.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-//        TableColumn clnCol2 = new TableColumn("Last Name");
-//        clnCol2.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-//        TableColumn cEmailCol2 = new TableColumn("Email");
-//        cEmailCol2.setCellValueFactory(new PropertyValueFactory<>("email"));
-//        TableColumn cUpdatedAtCol2 = new TableColumn("Updated At");
-//        cUpdatedAtCol2.setCellValueFactory(new PropertyValueFactory<>("updatedAt"));
-//        TableColumn cDiscountCol2 = new TableColumn("Discount");
-//        cDiscountCol2.setCellValueFactory(new PropertyValueFactory<>("discount"));
-//
-//        table2.getColumns().addAll(cfnCol2, clnCol2, cEmailCol2, cUpdatedAtCol2, cDiscountCol2);
-//        table2.setItems(data2);
-//        table2.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-//
-//        //Set up for customers who spends more than 100
-//        Text header3 = new Text("Customers who spends more than $100");
-//        header3.setFont(new Font("System", 24));
-//
-//        ObservableList<Customer> data3 = FXCollections.observableArrayList(operation.getCustomersWhoSpendsMoreThan100());
-//        TableView table3 = new TableView();
-//
-//        TableColumn cfnCol3 = new TableColumn("First Name");
-//        cfnCol3.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-//        TableColumn clnCol3 = new TableColumn("Last Name");
-//        clnCol3.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-//        TableColumn cEmailCol3 = new TableColumn("Email");
-//        cEmailCol3.setCellValueFactory(new PropertyValueFactory<>("email"));
-//        TableColumn cUpdatedAtCol3 = new TableColumn("Updated At");
-//        cUpdatedAtCol3.setCellValueFactory(new PropertyValueFactory<>("updatedAt"));
-//        TableColumn cDiscountCol3 = new TableColumn("Discount");
-//        cDiscountCol3.setCellValueFactory(new PropertyValueFactory<>("discount"));
-//
-//        table3.getColumns().addAll(cfnCol3, clnCol3, cEmailCol3, cUpdatedAtCol3, cDiscountCol3);
-//        table3.setItems(data3);
-//        table3.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-//
-//        box.getChildren().addAll(cHeader, cTable, header2, table2, header3, table3);
         box.getChildren().addAll(cHeader, cTable);
         scrollPane.setContent(box);
     }
@@ -417,12 +371,9 @@ public class AdminController {
         ObservableList<Employee> data = FXCollections.observableArrayList(operation.getAllEmployees());
         TableView table = new TableView();
 
-
         //Add title for all employees
         Text leftTitle = new Text("All Employees");
         leftTitle.setFont(new Font("System",24));
-
-
 
         //add left table and title to left box
         leftBox.getChildren().addAll(leftTitle, table);
@@ -447,7 +398,6 @@ public class AdminController {
         ObservableList<Employee> rightData = FXCollections.observableArrayList(operation.getEmployeesWhoAreCustomers());
         TableView rightTable = new TableView();
 
-
         //Add title for all employees
         Text rightTitle = new Text("Employees Are Customers");
         rightTitle.setFont(new Font("System",24));
@@ -463,7 +413,6 @@ public class AdminController {
         TableColumn RlastworkedCol = new TableColumn("Last Worked");
         RlastworkedCol.setCellValueFactory(new PropertyValueFactory<>("lastWorked"));
 
-
         rightTable.getColumns().addAll(RfnCol, RlnCol, RpositionCol, RemailCol, RlastworkedCol);
         rightTable.setItems(rightData);
 
@@ -478,7 +427,6 @@ public class AdminController {
         // add hbox to content pane
         contentPane.getChildren().add(hbox);
     }
-
 
     @FXML
     private void ratingButtonClicked(ActionEvent event) throws SQLException {
@@ -517,7 +465,6 @@ public class AdminController {
         Button star4 = new Button(); star4.setGraphic(starBlank4); star4.setStyle("-fx-background-color: transparent");
         Button star5 = new Button(); star5.setGraphic(starBlank5); star5.setStyle("-fx-background-color: transparent");
 
-
         //get average rating
         double avgRating = 0;
         try {
@@ -527,7 +474,6 @@ public class AdminController {
             ratingTitle.setText("Error! Can't get average rating");
         }
 
-
         Button[] buttonlist = new Button[5];
         buttonlist[0] = star1;
         buttonlist[1] = star2;
@@ -535,13 +481,10 @@ public class AdminController {
         buttonlist[3] = star4;
         buttonlist[4] = star5;
 
-
         for (int i = 0; i < Math.floor(avgRating); i++) {
             ImageView image = new ImageView(new Image(getClass().getResourceAsStream(yellowStarURL)));
             buttonlist[i].setGraphic(image);
         }
-
-
 
         // feedback box
         VBox feedBackBox = new VBox();
@@ -556,7 +499,6 @@ public class AdminController {
         String feedback = "";
         ArrayList<Rating> list = operation.getRatingsAndFeedbacks();
 
-
         for (Rating r : list) {
             feedback += r.getFeedback() + "\n\n";
         }
@@ -566,7 +508,6 @@ public class AdminController {
 
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(feedbackText);
-
 
         //Add children nodes to appropriate boxes
         ratingBox.getChildren().addAll(ratingTitle, star1, star2, star3, star4, star5);
@@ -578,10 +519,7 @@ public class AdminController {
         mainBox.getChildren().addAll(ratingBox, feedBackBox);
 
         contentPane.getChildren().add(mainBox);
-
     }
-
-
 
     @FXML
     private void archiveButtonClicked(ActionEvent event) {
@@ -668,7 +606,6 @@ public class AdminController {
             }
         });
 
-
         box.getChildren().addAll(dateLabel, dateTF, errorLabel);
         mainBox.getChildren().addAll(box, confirmButton);
     }
@@ -681,5 +618,4 @@ public class AdminController {
     static boolean isDate(String s) {
         return s.matches("([0-9]{4})-([0-9]{2})-([0-9]{2})");
     }
-
 }
