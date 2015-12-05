@@ -393,12 +393,6 @@ public class Operation {
 	}
 
 
-	public Receipt printReceipt() {
-		return null;
-	}
-	//SELECT *	FROM Model.Receipt 	WHERE cID=? AND date=?
-
-
 	/**
 	 * Get the number of employees by position
 	 * @param position position in string
