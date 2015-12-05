@@ -681,10 +681,10 @@ public class CustomerController {
 
                 feedback = textArea.getText().trim();
 
-                Customer customer = new Customer();
-                customer.setFirstName("Jon");
-                customer.setLastName("Nguyen");
-                customer.setEmail("jon@abc.com");
+                Customer customer = operation.getACustomer(currentCustomerID);
+//                customer.setFirstName("Jon");
+//                customer.setLastName("Nguyen");
+//                customer.setEmail("jon@abc.com");
                 boolean success = false;
                 try {
                     success = operation.rate(stars, feedback, customer);

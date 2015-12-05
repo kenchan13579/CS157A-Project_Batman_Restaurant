@@ -299,7 +299,8 @@ public class Operation {
 		boolean success = false;
 		PreparedStatement insertStatement = null;
 		int customerID = getCID(customer.getEmail());
-		String query = "INSERT INTO Rating (cid, stars, feedback) VALUES (?,?,?)";
+		String query = "INSERT INTO Rating (cid, stars, feedback) VALUES (?,?,?) " +
+				"ON DUPLICATE KEY UPDATE stars=?, feedback=?";
 
 		try {
 			connection.setAutoCommit(false);
@@ -307,6 +308,8 @@ public class Operation {
 			insertStatement.setInt(1, customerID);
 			insertStatement.setInt(2, stars);
 			insertStatement.setString(3, feedback);
+			insertStatement.setInt(4, stars);
+			insertStatement.setString(5, feedback);
 			insertStatement.execute();
 
 			connection.commit();
