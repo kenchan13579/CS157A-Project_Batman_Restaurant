@@ -90,3 +90,6 @@ INSERT INTO RESERVATION (tID, cID, partySize, reservationDate) VALUES (4, 5, 4, 
 INSERT INTO RESERVATION (tID, cID, partySize, reservationDate) VALUES (5, 7, 1, curdate());
 INSERT INTO RESERVATION (tID, cID, partySize, reservationDate) VALUES (8, 1, 2, curdate());
 INSERT INTO RESERVATION (tID, cID, partySize, reservationDate) VALUES (9, 4, 3, curdate());
+INSERT INTO RESERVATION (tID, cID, partySize, reservationDate) VALUES (2, 3, 1, curdate()+ INTERVAL 1 DAY); #tmr
+INSERT INTO RESERVATION (tID, cID, partySize, reservationDate) VALUES (7, 6, 2, curdate()+ INTERVAL 7 DAY); # a week from today
+INSERT INTO RESERVATION (tID, cID, partySize, reservationDate) VALUES (10, 8, 4, curdate()+ INTERVAL 2 DAY); # a day after tmr
