@@ -49,8 +49,7 @@ public class CustomerController {
     private Button foodMenuButton;
     @FXML
     private Button drinkMenuButton;
-    @FXML
-    private Button receiptButton;
+
     @FXML
     private Button reservationsButton;
     @FXML
@@ -66,7 +65,6 @@ public class CustomerController {
     private ImageView reserveIMV;
     private ImageView foodMenuIMV;
     private ImageView drinkMenuIMV;
-    private ImageView receiptIMV;
     private ImageView reservationsIMV;
     private ImageView rateIMV;
     private ImageView profileIMV;
@@ -75,7 +73,6 @@ public class CustomerController {
     private ImageView reserveSelectedIMV;
     private ImageView foodMenuSelectedIMV;
     private ImageView drinkMenuSelectedIMV;
-    private ImageView receiptSelectedIMV;
     private ImageView reservationsSelectedIMV;
     private ImageView rateSelectedIMV;
     private ImageView profileSelectedIMV;
@@ -111,11 +108,6 @@ public class CustomerController {
         drinkMenuSelectedIMV.setFitWidth(56);
         drinkMenuSelectedIMV.setFitHeight(59);
 
-        // receipt
-        receiptIMV.setFitWidth(37);
-        receiptIMV.setFitHeight(57);
-        receiptSelectedIMV.setFitWidth(37);
-        receiptSelectedIMV.setFitHeight(57);
 
         // reservations
         reservationsIMV.setFitWidth(63);
@@ -155,9 +147,6 @@ public class CustomerController {
         drinkMenuButton.setGraphic(drinkMenuIMV);
         drinkMenuButton.setStyle("-fx-background-color: transparent");
 
-        //receipt button
-        receiptButton.setGraphic(receiptIMV);
-        receiptButton.setStyle("-fx-background-color: transparent");
 
         //reservations button
         reservationsButton.setGraphic(reservationsIMV);
@@ -179,7 +168,6 @@ public class CustomerController {
         reserveIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/c_Reserve.png")));
         foodMenuIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/c_FoodMenu.png")));
         drinkMenuIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/c_DrinkMenu.png")));
-        receiptIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/c_Receipt.png")));
         reservationsIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/c_Reservations.png")));
         rateIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/c_Rate.png")));
         profileIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/c_Profile.png")));
@@ -187,7 +175,6 @@ public class CustomerController {
         reserveSelectedIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/c_Reserve_Selected.png")));
         foodMenuSelectedIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/c_FoodMenu_Selected.png")));
         drinkMenuSelectedIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/c_DrinkMenu_Selected.png")));
-        receiptSelectedIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/c_Receipt_Selected.png")));
         reservationsSelectedIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/c_Reservations_Selected.png")));
         rateSelectedIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/c_Rate_Selected.png")));
         profileSelectedIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/c_Profile_Selected.png")));
@@ -385,26 +372,6 @@ public class CustomerController {
         titleLabel.setText("Drink Menu");
     }
 
-    @FXML
-    private void receiptButtonClicked(ActionEvent event) {
-        configureButtons();
-        receiptButton.setGraphic(receiptSelectedIMV);
-
-        //clear old content
-        contentPane.getChildren().clear();
-
-        //set up receipt details
-        ImageView receiptDetails = new ImageView(new Image(getClass().getResourceAsStream("Graphics/ReceiptDetails.png")));
-        receiptDetails.setFitWidth(774/1.5);
-        receiptDetails.setFitHeight(419 /1.5);
-        VBox box = new VBox();
-        box.getChildren().add(receiptDetails);
-        box.setAlignment(Pos.TOP_CENTER);
-
-        contentPane.getChildren().add(box);
-        titleLabel.setText("Receipt");
-
-    }
 
     @FXML
     private void reservationsButtonClicked(ActionEvent event) {

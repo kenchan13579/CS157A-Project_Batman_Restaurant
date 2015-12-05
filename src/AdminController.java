@@ -50,8 +50,6 @@ public class AdminController {
     @FXML
     private Button employeesButton;
     @FXML
-    private Button receiptButton;
-    @FXML
     private Button ratingButton;
     @FXML
     private Button archiveButton;
@@ -64,7 +62,6 @@ public class AdminController {
     private ImageView reservationsIMV;
     private ImageView customersIMV;
     private ImageView employeesIMV;
-    private ImageView receiptIMV;
     private ImageView ratingIMV;
     private ImageView archiveIMV;
 
@@ -73,7 +70,6 @@ public class AdminController {
     private ImageView reservationsSelectedIMV;
     private ImageView customersSelectedIMV;
     private ImageView employeesSelectedIMV;
-    private ImageView receiptSelectedIMV;
     private ImageView ratingSelectedIMV;
     private ImageView archiveSelectedIMV;
 
@@ -127,12 +123,6 @@ public class AdminController {
         employeesSelectedIMV.setFitWidth(53);
         employeesSelectedIMV.setFitHeight(53);
 
-        // receipt
-        receiptIMV.setFitWidth(82);
-        receiptIMV.setFitHeight(57);
-        receiptSelectedIMV.setFitWidth(82);
-        receiptSelectedIMV.setFitHeight(57);
-
         // rating
         ratingIMV.setFitWidth(32);
         ratingIMV.setFitHeight(69);
@@ -164,9 +154,6 @@ public class AdminController {
         employeesButton.setGraphic(employeesIMV);
         employeesButton.setStyle("-fx-background-color: transparent");
 
-        //receipt button
-        receiptButton.setGraphic(receiptIMV);
-        receiptButton.setStyle("-fx-background-color: transparent");
 
         //rating button
         ratingButton.setGraphic(ratingIMV);
@@ -184,7 +171,6 @@ public class AdminController {
         reservationsIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/a_reservations.png")));
         customersIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/a_customers.png")));
         employeesIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/a_employees.png")));
-        receiptIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/a_receipt.png")));
         ratingIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/a_rating.png")));
         archiveIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/a_archive.png")));
 
@@ -192,7 +178,6 @@ public class AdminController {
         reservationsSelectedIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/a_reservations_selected.png")));
         customersSelectedIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/a_customers_selected.png")));
         employeesSelectedIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/a_employees_selected.png")));
-        receiptSelectedIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/a_receipt_selected.png")));
         ratingSelectedIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/a_rating_selected.png")));
         archiveSelectedIMV = new ImageView(new Image(getClass().getResourceAsStream("Graphics/a_archive_selected.png")));
 
@@ -440,27 +425,6 @@ public class AdminController {
         contentPane.getChildren().add(hbox);
     }
 
-    @FXML
-    private void receiptButtonClicked(ActionEvent event) {
-        configureButtons();
-        receiptButton.setGraphic(receiptSelectedIMV);
-
-        //clear old content
-        contentPane.getChildren().clear();
-
-        //set up receipt details
-        ImageView receiptDetails = new ImageView(new Image(getClass().getResourceAsStream("Graphics/ReceiptDetails.png")));
-        receiptDetails.setFitWidth(774/1.5);
-        receiptDetails.setFitHeight(419 /1.5);
-        VBox box = new VBox();
-        box.getChildren().add(receiptDetails);
-        box.setAlignment(Pos.TOP_CENTER);
-
-        contentPane.getChildren().add(box);
-        titleLabel.setText("Receipt");
-
-    }
-
 
     @FXML
     private void ratingButtonClicked(ActionEvent event) throws SQLException {
@@ -585,7 +549,7 @@ public class AdminController {
         contentPane.getChildren().add(mainBox);
 
         box.setSpacing(5);
-        box.setAlignment(Pos.TOP_CENTER);
+        box.setAlignment(Pos.CENTER);
 
         Label dateLabel = new Label("Cut Off Date:");
         dateLabel.setFont(new Font("System", 24));
