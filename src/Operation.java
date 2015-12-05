@@ -939,20 +939,22 @@ public class Operation {
      */
 	public ArrayList<Availability> getWeeklyAvailability() {
 		String sql = "SELECT *\n" +
-				"FROM (SELECT reservationDate, (SELECT count(*) FROM aTable) - count(*) as tablesAvailable\n" +
+				"FROM (\n" +
+				"SELECT reservationDate, (SELECT count(*) FROM aTable) - count(*) as tablesAvailable\n" +
 				"FROM Reservation\n" +
 				"WHERE reservationDate - CURDATE() < 7\n" +
 				"GROUP BY reservationDate\n" +
 				"UNION\n" +
 				"SELECT adate, (SELECT count(*) FROM aTable)\n" +
 				"FROM dates\n" +
-				"WHERE adate NOT IN (\n" +
+				"WHERE NOT EXISTS (\n" +
 				"\tSELECT reservationDate\n" +
 				"\tFROM Reservation\n" +
 				"\tWHERE reservationDate - CURDATE() < 7\n" +
-				"\tGROUP BY reservationDate)\n" +
+				"\tGROUP BY reservationDate\n" +
+				"HAVING reservationDate=adate)\n" +
 				") as availability\n" +
-				"ORDER BY reservationDate";
+				"ORDER BY reservationDate;";
 		try {
 			Statement statement = (Statement) connection.createStatement();
 			ResultSet rs = statement.executeQuery(sql);
