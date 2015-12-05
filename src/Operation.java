@@ -8,6 +8,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.CallableStatement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -881,6 +882,23 @@ public class Operation {
 	}
 
 	/**
+	 * Create temporary table for weekly dates
+	 * @return true if succeed, false otherwise
+	 */
+	public boolean callDates() {
+		CallableStatement cstmt = null;
+		try {
+			String sql= "{call weekDates()}";
+			cstmt= connection.prepareCall(sql);
+			return cstmt.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+			return false;
+		}
+	}
+
+	/**
 	 * Get tables that are available for a customer to reserve
 	 * @param date the requested reservation date
      * @return a list of available tables
@@ -920,10 +938,21 @@ public class Operation {
 	 * @return ArrayList of availability, which is date and number of tables available
      */
 	public ArrayList<Availability> getWeeklyAvailability() {
-		String sql = "SELECT reservationDate, (SELECT count(*) FROM aTable) - count(*) as tablesAvailable\n" +
+		String sql = "SELECT *\n" +
+				"FROM (SELECT reservationDate, (SELECT count(*) FROM aTable) - count(*) as tablesAvailable\n" +
 				"FROM Reservation\n" +
-				"WHERE reservationDate - CURDATE() < 8\n" +
-				"GROUP BY reservationDate";
+				"WHERE reservationDate - CURDATE() < 7\n" +
+				"GROUP BY reservationDate\n" +
+				"UNION\n" +
+				"SELECT adate, (SELECT count(*) FROM aTable)\n" +
+				"FROM dates\n" +
+				"WHERE adate NOT IN (\n" +
+				"\tSELECT reservationDate\n" +
+				"\tFROM Reservation\n" +
+				"\tWHERE reservationDate - CURDATE() < 7\n" +
+				"\tGROUP BY reservationDate)\n" +
+				") as availability\n" +
+				"ORDER BY reservationDate";
 		try {
 			Statement statement = (Statement) connection.createStatement();
 			ResultSet rs = statement.executeQuery(sql);

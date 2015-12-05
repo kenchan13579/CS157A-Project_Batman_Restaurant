@@ -129,3 +129,18 @@ BEGIN
     COMMIT;
 END $$
 DELIMITER ;
+
+/* Temporary table for dates */
+DROP PROCEDURE IF EXISTS weekDates;
+DELIMITER $$
+CREATE PROCEDURE weekDates()
+BEGIN
+	DECLARE tempdate DATE DEFAULT curdate();
+    DROP TABLE IF EXISTS dates;
+    CREATE TEMPORARY TABLE dates(adate DATE);
+	WHILE tempdate < curdate() + INTERVAL 7 DAY DO
+    INSERT INTO dates VALUES (tempdate);
+	SET tempdate = date_add(tempdate, INTERVAL 1 DAY);
+	END WHILE;
+END$$
+DELIMITER ;
