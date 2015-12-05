@@ -86,6 +86,7 @@ BEGIN
 END $$
 DELIMITER ;
 
+/* Maintain discounts for 5-star raters only */
 DROP TRIGGER IF EXISTS ratingUpdate;
 DELIMITER $$
 CREATE TRIGGER ratingUpdate
@@ -101,19 +102,18 @@ BEGIN
 END $$
 DELIMITER ;
 
-
-/*Update lastVisited when reservation is made*/
+/*Update updatedAt when reservation is made*/
 DROP TRIGGER IF EXISTS visiting;
 CREATE TRIGGER visiting
 AFTER INSERT ON Reservation
-FOR EACH ROW 
+FOR EACH ROW
 UPDATE Customer Set updatedAt = now() WHERE cID=NEW.cID;
 
-/*Update lastVisited when reservation is changed*/
-DROP TRIGGER IF EXISTS visiting;
-CREATE TRIGGER visiting
+/*Update updatedAt when reservation is changed*/
+DROP TRIGGER IF EXISTS visitUpdate;
+CREATE TRIGGER visitUpdate
 AFTER UPDATE ON Reservation
-FOR EACH ROW 
+FOR EACH ROW
 UPDATE Customer Set updatedAt = now() WHERE cID=NEW.cID;
 
 
