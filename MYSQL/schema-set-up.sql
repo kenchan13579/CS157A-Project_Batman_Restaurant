@@ -74,14 +74,29 @@ FOREIGN KEY (cID) REFERENCES CUSTOMER(cID) ON DELETE CASCADE
 
 /* triggers */
 /*Give discounts to customers who give 5-stars ratings*/
-DROP TRIGGER IF EXISTS highRater;
+DROP TRIGGER IF EXISTS newHighRater;
 DELIMITER $$
-CREATE TRIGGER highRater
+CREATE TRIGGER newHighRater
 AFTER INSERT ON Rating
 FOR EACH ROW
 BEGIN
 	IF (new.stars=5)
-	THEN UPDATE Customer Set discount=10 WHERE cID=new.cID;
+	THEN UPDATE Customer Set discount=discount+10 WHERE cID=new.cID;
+	END IF;
+END $$
+DELIMITER ;
+
+DROP TRIGGER IF EXISTS ratingUpdate;
+DELIMITER $$
+CREATE TRIGGER ratingUpdate
+AFTER UPDATE ON Rating
+FOR EACH ROW
+BEGIN
+	IF (old.stars=5 AND new.stars<>5)
+	THEN UPDATE Customer Set discount=discount-10 WHERE cID=new.cID;
+    END IF;
+	IF (new.stars=5 AND old.stars<>5)
+	THEN UPDATE Customer Set discount=discount+10 WHERE cID=new.cID;
 	END IF;
 END $$
 DELIMITER ;
@@ -91,6 +106,13 @@ DELIMITER ;
 DROP TRIGGER IF EXISTS visiting;
 CREATE TRIGGER visiting
 AFTER INSERT ON Reservation
+FOR EACH ROW 
+UPDATE Customer Set updatedAt = now() WHERE cID=NEW.cID;
+
+/*Update lastVisited when reservation is changed*/
+DROP TRIGGER IF EXISTS visiting;
+CREATE TRIGGER visiting
+AFTER UPDATE ON Reservation
 FOR EACH ROW 
 UPDATE Customer Set updatedAt = now() WHERE cID=NEW.cID;
 
