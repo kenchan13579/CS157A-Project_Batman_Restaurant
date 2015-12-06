@@ -1,4 +1,3 @@
-import Model.Customer;
 import com.mysql.jdbc.Connection;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

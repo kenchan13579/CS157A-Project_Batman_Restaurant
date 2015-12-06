@@ -1,5 +1,3 @@
-package Model;
-
 import javafx.beans.property.SimpleStringProperty;
 
 public class Employee extends Person{
